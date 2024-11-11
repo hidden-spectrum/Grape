@@ -672,15 +672,15 @@ extension ForceDirectedGraphModel {
         newContext.resolvedViews = self.graphRenderingContext.resolvedViews.merging(
             newContext.resolvedViews
         ) { old, new in
-            old
+            new
         }
 
         newContext.symbols = self.graphRenderingContext.symbols.merging(
             newContext.symbols
         ) { old, new in
-            old
+            new
         }
-
+        
         self.graphRenderingContext = newContext
 
         /// Resize
