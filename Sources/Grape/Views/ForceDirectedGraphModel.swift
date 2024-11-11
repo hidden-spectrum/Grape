@@ -148,13 +148,13 @@ public final class ForceDirectedGraphModel<Content: GraphContent> {
     var obsoleteState = ObsoleteState(cgSize: .zero)
 
     @usableFromInline
-    internal var stateMixinRef: ForceDirectedGraphState
+    internal var stateMixinRef: ForceDirectedGraphState<NodeID>
 
     @inlinable
     init(
         _ graphRenderingContext: _GraphRenderingContext<NodeID>,
         _ forceField: SealedForce2D,
-        stateMixin: ForceDirectedGraphState,
+        stateMixin: ForceDirectedGraphState<NodeID>,
         emittingNewNodesWith: @escaping (NodeID) -> KineticState = { _ in
             .init(position: .zero)
         },
@@ -180,13 +180,15 @@ public final class ForceDirectedGraphModel<Content: GraphContent> {
         )
         self.currentFrame = 0
         self.stateMixinRef = stateMixin
+        
+        self.stateMixinRef.nodeLookup = Dictionary(uniqueKeysWithValues: _simulationContext.nodeIndexLookup.map { ($1, $0) })
     }
 
     @inlinable
     convenience init(
         _ graphRenderingContext: _GraphRenderingContext<NodeID>,
         _ forceField: SealedForce2D,
-        stateMixin: ForceDirectedGraphState,
+        stateMixin: ForceDirectedGraphState<NodeID>,
         emittingNewNodesWith: @escaping (NodeID) -> KineticState = { _ in
             .init(position: .zero)
         },

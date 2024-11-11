@@ -16,7 +16,7 @@ import Observation
 //     }
 // }
 
-public class ForceDirectedGraphState: Observation.Observable {
+public class ForceDirectedGraphState<NodeID: Hashable>: Observation.Observable {
 
     @usableFromInline
     internal var _$modelTransform: ViewportTransform
@@ -36,6 +36,8 @@ public class ForceDirectedGraphState: Observation.Observable {
             }
         }
     }
+    
+    public var nodeLookup: [Int: NodeID] = [:]
 
     @inlinable
     public var isRunning: Bool {

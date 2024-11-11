@@ -3,6 +3,8 @@ import SwiftUI
 
 public struct ForceDirectedGraph<NodeID: Hashable, Content: GraphContent>
 where NodeID == Content.NodeID {
+    
+    typealias NodeLookup = [Int: NodeID]
 
     // public typealias NodeID = Content.NodeID
 
@@ -77,7 +79,7 @@ where NodeID == Content.NodeID {
     @inlinable
     @MainActor
     public init(
-        states: ForceDirectedGraphState = ForceDirectedGraphState(),
+        states: ForceDirectedGraphState<NodeID> = ForceDirectedGraphState(),
         ticksPerSecond: Double = 60.0,
         @GraphContentBuilder<NodeID> graph: () -> Content,
         @SealedForce2DBuilder force: () -> [SealedForce2D.ForceEntry] = Self.defaultForce,
