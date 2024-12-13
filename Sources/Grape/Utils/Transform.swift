@@ -79,7 +79,7 @@ extension TransformProtocol {
 
 }
 
-public struct ViewportTransform: TransformProtocol {
+public struct ViewportTransform: TransformProtocol, Equatable {
     public typealias Scalar = Double
     public var translate: SIMD2<Scalar>
 

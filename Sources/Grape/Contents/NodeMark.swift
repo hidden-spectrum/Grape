@@ -46,8 +46,8 @@ public struct NodeMark<NodeID: Hashable>: GraphContent & Identifiable {
             )
         )
         context.states.currentID = .node(id)
-        context.nodeRadiusSquaredLookup[id] = simd_length_squared(
-            context.states.currentSymbolSizeOrDefault.simd)
+        let size = context.states.symbolSize.last ?? CGSize(width: radius, height: radius)
+        context.nodeRadiusSquaredLookup[id] = simd_length_squared(size.simd)
     }
 }
 

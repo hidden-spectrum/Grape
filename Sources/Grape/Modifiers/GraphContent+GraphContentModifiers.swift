@@ -45,10 +45,10 @@ extension GraphContent {
         return ModifiedGraphContent(
             self,
             GraphContentEffect.SymbolSize(
-                CGSize(width: radius * 2, height: radius * 2)
+                CGSize(width: radius, height: radius)
             ))
     }
-
+    
     @inlinable
     @available(*, deprecated, message: "use foregroundStyle(_:)")
     public func fill(_ shading: GraphicsContext.Shading) -> some GraphContent<NodeID> {

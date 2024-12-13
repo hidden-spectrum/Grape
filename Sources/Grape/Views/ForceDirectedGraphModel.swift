@@ -65,8 +65,8 @@ public final class ForceDirectedGraphModel<Content: GraphContent> {
 
     // cache this so text size don't change on monitor switch
     @usableFromInline
-    var lastRasterizedScaleFactor: Double = 2.0
-
+    var lastRasterizedScaleFactor: Double = UIScreen.main.scale
+    
     @usableFromInline
     var _$changeMessage = "N/A"
 
@@ -443,7 +443,7 @@ extension ForceDirectedGraphModel {
                     Path(ellipseIn: rect),
                     with: op.fill ?? .defaultNodeShading
                 )
-
+                
                 if let strokeEffect = op.stroke {
                     switch strokeEffect.color {
                     case .color(let color):
@@ -470,26 +470,23 @@ extension ForceDirectedGraphModel {
 
             for (symbolID, resolvedTextContent) in graphRenderingContext.resolvedTexts {
 
-                guard let resolvedStatus = graphRenderingContext.symbols[resolvedTextContent]
-                else { continue }
+                guard let resolvedStatus = graphRenderingContext.symbols[resolvedTextContent] else {
+                    continue
+                }
 
                 // Look for rasterized symbol's image
                 var rasterizedSymbol: CGImage? = nil
                 switch resolvedStatus {
                 case .pending(let text):
                     let env = graphicsContext.environment
-                    let cgImage = text.toCGImage(
-                        with: env,
-                        antialias: Self.textRasterizationAntialias
-                    )
+                    let cgImage = text.toCGImage(with: env)
                     lastRasterizedScaleFactor = env.displayScale
-                    graphRenderingContext.symbols[resolvedTextContent] = .resolved(
-                        text, cgImage)
+                    graphRenderingContext.symbols[resolvedTextContent] = .resolved(text, cgImage)
                     rasterizedSymbol = cgImage
                 case .resolved(_, let cgImage):
                     rasterizedSymbol = cgImage
                 }
-
+                
                 guard let rasterizedSymbol = rasterizedSymbol else {
                     continue
                 }
@@ -504,23 +501,18 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-                        let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-
-                        let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
-                            width: physicalWidth, height: physicalHeight)
-
+                        let pointWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                        let pointHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
+                        let textImageOffset = textOffsetParams.alignment
+                            .textImageOffsetInCGContext(width: pointWidth, height: pointHeight)
+                        
                         cgContext.draw(
                             rasterizedSymbol,
                             in: .init(
                                 x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
                                 y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
+                                width: pointWidth,
+                                height: pointHeight
                             )
                         )
                     }
@@ -535,23 +527,19 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-                        let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                        let pointWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                        let pointHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
 
-                        let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
-                            width: physicalWidth, height: physicalHeight)
-
+                        let textImageOffset = textOffsetParams.alignment
+                            .textImageOffsetInCGContext(width: pointWidth, height: pointHeight)
+                        
                         cgContext.draw(
                             rasterizedSymbol,
                             in: .init(
                                 x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
                                 y: -center.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
+                                width: pointWidth,
+                                height: pointHeight
                             )
                         )
                     }
@@ -586,23 +574,19 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-                        let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                        let pointWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                        let pointHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
 
-                        let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
-                            width: physicalWidth, height: physicalHeight)
+                        let textImageOffset = textOffsetParams.alignment
+                            .textImageOffsetInCGContext(width: pointWidth, height: pointHeight)
 
                         cgContext.draw(
                             rasterizedSymbol,
                             in: .init(
                                 x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
                                 y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
+                                width: pointWidth,
+                                height: pointHeight
                             )
                         )
                     }
@@ -617,23 +601,19 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-                        let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                        let pointWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                        let pointHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
 
-                        let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
-                            width: physicalWidth, height: physicalHeight)
-
+                        let textImageOffset = textOffsetParams.alignment
+                            .textImageOffsetInCGContext(width: pointWidth, height: pointHeight)
+                        
                         cgContext.draw(
                             rasterizedSymbol,
                             in: .init(
                                 x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
                                 y: -center.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
+                                width: pointWidth,
+                                height: pointHeight
                             )
                         )
                     }
@@ -642,12 +622,7 @@ extension ForceDirectedGraphModel {
         }
 
     }
-
-    @inlinable
-    static var textRasterizationAntialias: Double {
-        return 1.5
-    }
-
+    
     @inlinable
     func revive(
         for newContext: _GraphRenderingContext<NodeID>,

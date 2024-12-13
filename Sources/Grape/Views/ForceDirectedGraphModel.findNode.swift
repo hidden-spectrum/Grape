@@ -9,16 +9,12 @@ extension ForceDirectedGraphModel {
     ) -> NodeID? {
         for i in simulationContext.storage.kinetics.range.reversed() {
             let iNodeID = simulationContext.nodeIndices[i]
-            guard
-                let iRadius2 = graphRenderingContext.nodeRadiusSquaredLookup[
-                    simulationContext.nodeIndices[i]
-                ]
-            else { continue }
-            let iPos = simulationContext.storage.kinetics.position[i]
+            guard let iRadius2 = graphRenderingContext.nodeRadiusSquaredLookup[simulationContext.nodeIndices[i]] else {
+                continue
+            }
             
-
-            if simd_length_squared(locationInSimulationCoordinate - iPos) <= iRadius2
-            {
+            let iPos = simulationContext.storage.kinetics.position[i]
+            if simd_length_squared(locationInSimulationCoordinate - iPos) <= iRadius2 {
                 return iNodeID
             }
         }
