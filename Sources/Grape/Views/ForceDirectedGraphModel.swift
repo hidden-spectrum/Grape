@@ -337,8 +337,8 @@ extension ForceDirectedGraphModel {
         obsoleteState.cgSize = size
 
         let transform = modelTransform.translate(by: size.simd / 2)
-        // debugPrint(transform.scale)
-
+        let nodeScale = min(transform.scale, 1.0)
+        
         // var viewportPositions = [SIMD2<Double>]()
         // viewportPositions.reserveCapacity(simulationContext.storage.kinetics.position.count)
         for i in simulationContext.storage.kinetics.position.range {
@@ -359,49 +359,54 @@ extension ForceDirectedGraphModel {
             let sourcePos = viewportPositions[source]
             let targetPos = viewportPositions[target]
 
-            let p =
+            let linkPath = {
                 if let pathBuilder = op.path {
-                    {
-                        let sourceNodeRadius = sqrt(graphRenderingContext.nodeRadiusSquaredLookup[op.mark.id.source] ?? 0) / 2
-                        let targetNodeRadius = sqrt(graphRenderingContext.nodeRadiusSquaredLookup[op.mark.id.target] ?? 0) / 2
-                        let angle = atan2(targetPos.y - sourcePos.y, targetPos.x - sourcePos.x)
-                        let sourceOffset = SIMD2<Double>(
-                            cos(angle) * sourceNodeRadius, sin(angle) * sourceNodeRadius
-                        )
-                        let targetOffset = SIMD2<Double>(
-                            cos(angle) * targetNodeRadius, sin(angle) * targetNodeRadius
-                        )
-
-                        let sourcePosWithOffset = sourcePos + sourceOffset
-                        let targetPosWithOffset = targetPos - targetOffset
-                        // return pathBuilder(sourcePosWithOffset, targetPosWithOffset)
-                        return pathBuilder(sourcePosWithOffset, targetPosWithOffset)
-                    }()
+                    let sourceNodeRadius = (sqrt(graphRenderingContext.nodeRadiusSquaredLookup[op.mark.id.source] ?? 0) / 2) * nodeScale
+                    let targetNodeRadius = (sqrt(graphRenderingContext.nodeRadiusSquaredLookup[op.mark.id.target] ?? 0) / 2) * nodeScale
+                    let angle = atan2(targetPos.y - sourcePos.y, targetPos.x - sourcePos.x)
+                    let sourceOffset = SIMD2<Double>(
+                        cos(angle) * sourceNodeRadius, sin(angle) * sourceNodeRadius
+                    )
+                    let targetOffset = SIMD2<Double>(
+                        cos(angle) * targetNodeRadius, sin(angle) * targetNodeRadius
+                    )
+                    
+                    let sourcePosWithOffset = sourcePos + sourceOffset
+                    let targetPosWithOffset = targetPos - targetOffset
+                    // return pathBuilder(sourcePosWithOffset, targetPosWithOffset)
+                    return pathBuilder(sourcePosWithOffset, targetPosWithOffset)
                 } else {
-                    Path { path in
+                    return Path { path in
                         path.move(to: sourcePos.cgPoint)
                         path.addLine(to: targetPos.cgPoint)
                     }
                 }
+            }()
+            
             if let strokeEffect = op.stroke {
                 switch strokeEffect.color {
                 case .color(let color):
+                    var style = strokeEffect.style ?? .defaultLinkStyle
+                    style.lineWidth *= nodeScale
                     graphicsContext.stroke(
-                        p,
+                        linkPath,
                         with: .color(color),
-                        style: strokeEffect.style ?? .defaultLinkStyle
+                        style: style
                     )
                 case .clip:
                     break
                 }
             } else {
+                var style = StrokeStyle.defaultLinkStyle
+                style.lineWidth *= nodeScale
                 graphicsContext.stroke(
-                    p, with: .defaultLinkShading,
-                    style: .defaultLinkStyle
+                    linkPath,
+                    with: .defaultLinkShading,
+                    style: style
                 )
             }
         }
-
+        
         for op in graphRenderingContext.nodeOperations {
             guard let id = simulationContext.nodeIndexLookup[op.mark.id] else {
                 continue
@@ -433,11 +438,12 @@ extension ForceDirectedGraphModel {
                 }
             } else {
                 graphicsContext.transform = .identity
+                let scaledRadius = op.mark.radius * nodeScale
                 let rect = CGRect(
-                    origin: (pos - op.mark.radius).cgPoint,
-                    size: CGSize(
-                        width: op.mark.radius * 2, height: op.mark.radius * 2
-                    )
+                    x: pos.x - scaledRadius,
+                    y: pos.y - scaledRadius,
+                    width: scaledRadius * 2,
+                    height: scaledRadius * 2
                 )
                 graphicsContext.fill(
                     Path(ellipseIn: rect),
@@ -563,7 +569,7 @@ extension ForceDirectedGraphModel {
                 guard let rasterizedSymbol = rasterizedSymbol else {
                     continue
                 }
-
+                
                 // Start drawing
                 switch symbolID {
                 case .node(let nodeID):
@@ -574,17 +580,17 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let pointWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                        let pointHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
+                        let pointWidth = (Double(rasterizedSymbol.width) / lastRasterizedScaleFactor) * nodeScale
+                        let pointHeight = (Double(rasterizedSymbol.height) / lastRasterizedScaleFactor) * nodeScale
 
                         let textImageOffset = textOffsetParams.alignment
                             .textImageOffsetInCGContext(width: pointWidth, height: pointHeight)
-
+                        
                         cgContext.draw(
                             rasterizedSymbol,
                             in: .init(
-                                x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
-                                y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
+                                x: pos.x + offset.x + textImageOffset.x,
+                                y: -pos.y - offset.y - textImageOffset.y,
                                 width: pointWidth,
                                 height: pointHeight
                             )
