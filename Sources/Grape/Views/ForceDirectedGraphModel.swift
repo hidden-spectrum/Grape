@@ -28,6 +28,7 @@ public protocol _AnyGraphProxyProtocol {
 }
 
 extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
+    @inlinable
     public func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable? {
         if let nodeID = findNode(at: locationInViewportCoordinate) {
             return AnyHashable(nodeID)
@@ -36,6 +37,7 @@ extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
         }
     }
 
+    @inlinable
     public func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?) {
         guard let nodeID = nodeID as? NodeID else {
             return

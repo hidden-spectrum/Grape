@@ -76,8 +76,9 @@ import SwiftUI
             )
             self.proxy.modelTransform = newModelTransform
 
-            // guard let action = self.proxy._onGraphMagnified else { return }
-            // action()
+            if let action {
+                action()
+            }
         }
 
         @inlinable
