@@ -39,12 +39,12 @@ Grape supports localization features. You can localize the labels in the graph v
 * ``GraphComponent``
 
 ### Adding interactivity
-* ``View.graphOverlay(_:content:)``
-* ``View.graphBackground(_:content:)``
+* ``View/graphOverlay(_:content:)``
+* ``View/graphBackground(_:content:)``
 * ``GraphProxy``
-* ``View.withGraphTapGesture(_:action:)``
-* ``View.withGraphDragGesture(_:action:)``
-* ``View.withGraphMagnifyGesture(_:action:)``
+* ``View/withGraphTapGesture(_:action:)``
+* ``View/withGraphDragGesture(_:action:)``
+* ``View/withGraphMagnifyGesture(_:action:)``
 
 ### Managing the view state
 
