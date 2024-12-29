@@ -13,7 +13,7 @@ extension ForceDirectedGraphModel {
         for i in simulationContext.storage.kinetics.range.reversed() {
             let iNodeID = simulationContext.nodeIndices[i]
             guard
-                let iRadius2 = graphRenderingContext.nodeRadiusSquaredLookup[
+                let iRadius2 = graphRenderingContext.nodeHitSizeAreaLookup[
                     simulationContext.nodeIndices[i]
                 ]
             else { continue }

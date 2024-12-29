@@ -23,7 +23,7 @@ public struct NodeMark<NodeID: Hashable>: GraphContent, Identifiable, Equatable 
             )
         )
         context.states.currentID = .node(id)
-        context.nodeRadiusSquaredLookup[id] = simd_length_squared(
+        context.nodeHitSizeAreaLookup[id] = simd_length_squared(
             context.states.currentSymbolSizeOrDefault.simd)
     }
 }

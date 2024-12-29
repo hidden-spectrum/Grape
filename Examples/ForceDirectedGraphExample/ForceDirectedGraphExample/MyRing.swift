@@ -24,7 +24,7 @@ struct MyRing: View {
                     .stroke(.clear)
                 NodeMark(id: 3 * i + 1)
                     .symbol(.pentagon)
-                    .symbolSize(radius:5.0)
+                    .symbolSize(radius:10)
                     .foregroundStyle(.blue)
                     .stroke(.clear)
                 NodeMark(id: 3 * i + 2)
