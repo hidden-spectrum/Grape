@@ -182,14 +182,6 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     @usableFromInline
     var _onTicked: ((UInt) -> Void)? = nil
 
-    @usableFromInline
-    var _onNodeDragChanged: ((NodeID, CGPoint) -> Void)? = nil
-
-    @usableFromInline
-    var _onNodeDragEnded: ((NodeID, CGPoint) -> Bool)? = nil
-
-    // @usableFromInline
-    // var _onNodeTapped: ((NodeID?) -> Void)? = nil
 
     @usableFromInline
     var _onViewportTransformChanged: ((ViewportTransform, Bool) -> Void)? = nil
@@ -199,9 +191,6 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
 
     @usableFromInline
     var _emittingNewNodesWith: (NodeID) -> KineticState
-
-    @usableFromInline
-    var _onGraphMagnified: (() -> Void)? = nil
 
     // records the transform right before a magnification gesture starts
     public var obsoleteState = ObsoleteState(cgSize: .zero)
