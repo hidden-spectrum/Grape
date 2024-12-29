@@ -3,11 +3,28 @@ import Foundation
 import Observation
 import SwiftUI
 
-
 @MainActor
 public protocol _AnyGraphProxyProtocol {
     @inlinable
     func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable?
+
+    @inlinable
+    func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?)
+
+    @inlinable
+    var kineticAlpha: Double { get nonmutating set }
+
+    @inlinable
+    var finalTransform: ViewportTransform { get }
+
+    @inlinable
+    var modelTransform: ViewportTransform { get nonmutating set }
+
+    @inlinable
+    var lastTransformRecord: ViewportTransform? { get nonmutating set }
+
+    @inlinable
+    var obsoleteState: ObsoleteState { get nonmutating set }
 }
 
 extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
@@ -18,17 +35,45 @@ extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
             return nil
         }
     }
-}
-@MainActor
-public final class ForceDirectedGraphModel<NodeID: Hashable> {
 
-    @usableFromInline
-    internal struct ObsoleteState {
-        @usableFromInline
-        var cgSize: CGSize
+    public func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?) {
+        guard let nodeID = nodeID as? NodeID else {
+            return
+        }
+        let newLocationInSimulation: SIMD2<Double>? =
+            if let fixation {
+                finalTransform.invert(fixation.simd)
+            } else {
+                nil
+            }
+        if let nodeIndex = simulationContext.nodeIndexLookup[nodeID] {
+            simulationContext.storage.kinetics.fixation[nodeIndex] = newLocationInSimulation
+        }
     }
 
-    // public typealias NodeID = Content.NodeID
+    @inlinable
+    public var kineticAlpha: Double {
+        get {
+            simulationContext.storage.kinetics.alpha
+        }
+        set {
+            simulationContext.storage.kinetics.alpha = newValue
+        }
+    }
+}
+
+public struct ObsoleteState {
+    @usableFromInline
+    var cgSize: CGSize
+
+    @inlinable
+    public init(cgSize: CGSize) {
+        self.cgSize = cgSize
+    }
+}
+
+@MainActor
+public final class ForceDirectedGraphModel<NodeID: Hashable> {
 
     @usableFromInline
     var graphRenderingContext: _GraphRenderingContext<NodeID>
@@ -37,7 +82,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     var simulationContext: SimulationContext<NodeID>
 
     @inlinable
-    internal var modelTransform: ViewportTransform {
+    public var modelTransform: ViewportTransform {
         // @storageRestrictions(initializes: _modelTransform)
         // init(initialValue) {
         //     _modelTransform = initialValue
@@ -55,8 +100,8 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     }
 
     /// Moves the zero-centered simulation to final view
-    @usableFromInline
-    var finalTransform: ViewportTransform = .identity
+    // @usableFromInline
+    public var finalTransform: ViewportTransform = .identity
 
     @usableFromInline
     var viewportPositions: UnsafeArray<SIMD2<Double>>
@@ -73,8 +118,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     }
 
     // records the transform right before a magnification gesture starts
-    @usableFromInline
-    var lastTransformRecord: ViewportTransform? = nil
+    public var lastTransformRecord: ViewportTransform? = nil
 
     @usableFromInline
     let velocityDecay: Double
@@ -138,14 +182,6 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     @usableFromInline
     var _onTicked: ((UInt) -> Void)? = nil
 
-    @usableFromInline
-    var _onNodeDragChanged: ((NodeID, CGPoint) -> Void)? = nil
-
-    @usableFromInline
-    var _onNodeDragEnded: ((NodeID, CGPoint) -> Bool)? = nil
-
-    // @usableFromInline
-    // var _onNodeTapped: ((NodeID?) -> Void)? = nil
 
     @usableFromInline
     var _onViewportTransformChanged: ((ViewportTransform, Bool) -> Void)? = nil
@@ -156,12 +192,8 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     @usableFromInline
     var _emittingNewNodesWith: (NodeID) -> KineticState
 
-    @usableFromInline
-    var _onGraphMagnified: (() -> Void)? = nil
-
-    // // records the transform right before a magnification gesture starts
-    @usableFromInline
-    var obsoleteState = ObsoleteState(cgSize: .zero)
+    // records the transform right before a magnification gesture starts
+    public var obsoleteState = ObsoleteState(cgSize: .zero)
 
     @usableFromInline
     internal var stateMixinRef: ForceDirectedGraphState
@@ -272,7 +304,8 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
 
     @inlinable
     deinit {
-        _ = MainActor.assumeIsolated {
+        print("deinit")
+        let _ = MainActor.assumeIsolated {
             scheduledTimer?.invalidate()
         }
     }

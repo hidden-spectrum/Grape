@@ -7,7 +7,8 @@ where Vector: SimulatableVector & L2NormCalculatable {
     ///
     /// Ordered as the nodeIds you passed in when initializing simulation.
     /// They are always updated.
-    public var position: UnsafeArray<Vector>
+    @usableFromInline
+    package var position: UnsafeArray<Vector>
 
     // public var positionBufferPointer: UnsafeMutablePointer<Vector>
 
@@ -15,7 +16,8 @@ where Vector: SimulatableVector & L2NormCalculatable {
     ///
     /// Ordered as the nodeIds you passed in when initializing simulation.
     /// They are always updated.
-    public var velocity: UnsafeArray<Vector>
+    @usableFromInline
+    package var velocity: UnsafeArray<Vector>
 
     // public var velocityBufferPointer: UnsafeMutablePointer<Vector>
 
@@ -23,7 +25,8 @@ where Vector: SimulatableVector & L2NormCalculatable {
     ///
     /// Ordered as the nodeIds you passed in when initializing simulation.
     /// They are always updated.
-    public var fixation: UnsafeArray<Vector?>
+    @usableFromInline
+    package var fixation: UnsafeArray<Vector?>
 
 
     public var validCount: Int
@@ -31,20 +34,21 @@ where Vector: SimulatableVector & L2NormCalculatable {
     public let alphaMin: Vector.Scalar
     public let alphaDecay: Vector.Scalar
     public let alphaTarget: Vector.Scalar
-
     public let velocityDecay: Vector.Scalar
 
     @usableFromInline
     var randomGenerator: Vector.Scalar.Generator
 
 
-    public let links: [EdgeID<Int>]
+
+    @usableFromInline
+    package let links: [EdgeID<Int>]
 
     // public var validRanges: [Range<Int>]
     // public var validRanges: Range<Int>
 
     @inlinable
-    public var range: Range<Int> {
+    package var range: Range<Int> {
         return 0..<validCount
     }
 
@@ -75,6 +79,21 @@ where Vector: SimulatableVector & L2NormCalculatable {
         self.velocity = .createBuffer(moving: velocity, fillingWithIfFailed: .zero)
         self.fixation = .createBuffer(moving: fixation, fillingWithIfFailed: nil)
         self.randomGenerator = .init()
+    }
+
+    @inlinable
+    package static var empty: Kinetics<Vector> {
+        Kinetics(
+            links: [],
+            initialAlpha: 0,
+            alphaMin: 0,
+            alphaDecay: 0,
+            alphaTarget: 0,
+            velocityDecay: 0,
+            position: [],
+            velocity: [],
+            fixation: []
+        )
     }
 
 }

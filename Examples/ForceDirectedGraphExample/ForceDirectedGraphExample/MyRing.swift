@@ -53,8 +53,24 @@ struct MyRing: View {
             CenterForce()
             CollideForce()
         }
+        .graphOverlay { proxy in
+            Rectangle().fill(.clear).contentShape(Rectangle())
+                .withGraphDragGesture(proxy, action: describe)
+                .withGraphMagnifyGesture(proxy)
+        }
         .toolbar {
             GraphStateToggle(graphStates: graphStates)
+        }
+    }
+    
+    func describe(_ state: GraphDragState?) {
+        switch state {
+        case .node(let anyHashable):
+            print("Dragging \(anyHashable as! Int)")
+        case .background(let start):
+            print("Dragging \(start)")
+        case nil:
+            print("Drag ended")
         }
     }
 }
