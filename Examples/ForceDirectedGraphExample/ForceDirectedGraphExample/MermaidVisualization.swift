@@ -107,6 +107,7 @@ struct MermaidVisualization: View {
         }
         .graphOverlay(content: { proxy in
             Rectangle().fill(.clear).contentShape(Rectangle())
+                .withGraphDragGesture(proxy)
                 .onTapGesture { value in
                     if let nodeID = proxy.locateNode(at: .init(x: value.x, y: value.y)) {
                         guard let nodeID = nodeID as? String else { return }

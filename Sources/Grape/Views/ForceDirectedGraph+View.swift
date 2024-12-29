@@ -69,25 +69,25 @@ extension ForceDirectedGraph: View {
             let _ = model.currentFrame
             self.model.render(&context, size)
         }
-#if !os(tvOS)
-        .gesture(
-            DragGesture(
-                minimumDistance: Self.minimumDragDistance,
-                coordinateSpace: .local
-            )
-            .onChanged(onDragChange)
-            .onEnded(onDragEnd)
-        )
-        // .onTapGesture(count: 1, perform: onTapGesture)
-#endif
+// #if !os(tvOS)
+//         .gesture(
+//             DragGesture(
+//                 minimumDistance: Self.minimumDragDistance,
+//                 coordinateSpace: .local
+//             )
+//             .onChanged(onDragChange)
+//             .onEnded(onDragEnd)
+//         )
+//         // .onTapGesture(count: 1, perform: onTapGesture)
+// #endif
 
-#if os(iOS) || os(macOS)
-        .gesture(
-            MagnifyGesture(minimumScaleDelta: Self.minimumScaleDelta)
-                .onChanged(onMagnifyChange)
-                .onEnded(onMagnifyEnd)
-        )
-#endif
+// #if os(iOS) || os(macOS)
+//         .gesture(
+//             MagnifyGesture(minimumScaleDelta: Self.minimumScaleDelta)
+//                 .onChanged(onMagnifyChange)
+//                 .onEnded(onMagnifyEnd)
+//         )
+// #endif
     }
 }
 
