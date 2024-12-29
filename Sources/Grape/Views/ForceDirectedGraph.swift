@@ -37,7 +37,7 @@ where NodeID == Content.NodeID {
 
     // @State
     @inlinable
-    internal var model: ForceDirectedGraphModel<Content>
+    internal var model: ForceDirectedGraphModel<Content.NodeID>
     {
         @storageRestrictions(initializes: _model)
         init(initialValue) {
@@ -48,7 +48,7 @@ where NodeID == Content.NodeID {
     }
 
     @usableFromInline
-    internal var _model: State<ForceDirectedGraphModel<Content>>
+    internal var _model: State<ForceDirectedGraphModel<Content.NodeID>>
 
     /// The default force to be applied to the graph
     ///

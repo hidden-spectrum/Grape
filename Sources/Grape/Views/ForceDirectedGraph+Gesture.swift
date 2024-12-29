@@ -79,17 +79,17 @@ import SwiftUI
         @inlinable
         static var minimumDragDistance: CGFloat { 3.0 }
     }
-    @MainActor
-    extension ForceDirectedGraph {
-        @inlinable
-        internal func onTapGesture(
-            _ location: CGPoint
-        ) {
-            guard let action = self.model._onNodeTapped else { return }
-            let nodeID = self.model.findNode(at: location)
-            action(nodeID)
-        }
-    }
+    // @MainActor
+    // extension ForceDirectedGraph {
+    //     @inlinable
+    //     internal func onTapGesture(
+    //         _ location: CGPoint
+    //     ) {
+    //         guard let action = self.model._onNodeTapped else { return }
+    //         let nodeID = self.model.findNode(at: location)
+    //         action(nodeID)
+    //     }
+    // }
 #endif
 
 #if os(iOS) || os(macOS)
@@ -192,14 +192,23 @@ extension ForceDirectedGraph {
     }
 
     @inlinable
+    @available(*, deprecated, message: "Use `graphOverlay` instead")
     public func onNodeTapped(
         perform action: @escaping (NodeID?) -> Void
-    ) -> Self {
-        self.model._onNodeTapped = action
-        return self
+    ) -> some View {
+        self.graphOverlay { proxy in
+            Rectangle().fill(.clear).contentShape(Rectangle())
+                .onTapGesture { value in
+                    if let nodeID = proxy.locateNode(at: .init(x: value.x, y: value.y)) {
+                        guard let nodeID = nodeID as? NodeID else { return }
+                        action(nodeID)
+                    }
+                }
+        }
     }
 
     @inlinable
+    @available(*, deprecated, message: "Use `graphOverlay` instead")
     public func onNodeDragChanged(
         perform action: @escaping (NodeID, CGPoint) -> Void
     ) -> Self {
@@ -208,6 +217,7 @@ extension ForceDirectedGraph {
     }
 
     @inlinable
+    @available(*, deprecated, message: "Use `graphOverlay` instead")
     public func onNodeDragEnded(
         shouldBeFixed action: @escaping (NodeID, CGPoint) -> Bool
     ) -> Self {
@@ -216,6 +226,7 @@ extension ForceDirectedGraph {
     }
 
     @inlinable
+    @available(*, deprecated, message: "Use `graphOverlay` instead")
     public func onGraphMagnified(
         perform action: @escaping () -> Void
     ) -> Self {
