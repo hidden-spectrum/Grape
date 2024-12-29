@@ -40,7 +40,7 @@ struct Lattice: View {
             Series(0..<(width*width)) { i in
                 let _i = Double(i / width) / Double(width)
                 let _j = Double(i % width) / Double(width)
-                NodeMark(id: i, radius: 3.0)
+                NodeMark(id: i)
                     .foregroundStyle(Color(red: 1, green: _i, blue: _j))
                     .stroke()
             }

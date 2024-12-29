@@ -116,7 +116,7 @@ public final class ForceDirectedGraphModel<Content: GraphContent> {
     let ticksPerSecond: Double
 
     @usableFromInline
-//    @MainActor
+    //    @MainActor
     var scheduledTimer: Timer? = nil
 
     @usableFromInline
@@ -360,8 +360,10 @@ extension ForceDirectedGraphModel {
             let p =
                 if let pathBuilder = op.path {
                     {
-                        let sourceNodeRadius = sqrt(graphRenderingContext.nodeRadiusSquaredLookup[op.mark.id.source] ?? 0) / 2
-                        let targetNodeRadius = sqrt(graphRenderingContext.nodeRadiusSquaredLookup[op.mark.id.target] ?? 0) / 2
+                        let sourceNodeRadius =
+                            sqrt(graphRenderingContext.nodeHitSizeAreaLookup[op.mark.id.source] ?? 0) / 2
+                        let targetNodeRadius =
+                            sqrt(graphRenderingContext.nodeHitSizeAreaLookup[op.mark.id.target] ?? 0) / 2
                         let angle = atan2(targetPos.y - sourcePos.y, targetPos.x - sourcePos.x)
                         let sourceOffset = SIMD2<Double>(
                             cos(angle) * sourceNodeRadius, sin(angle) * sourceNodeRadius
@@ -405,60 +407,41 @@ extension ForceDirectedGraphModel {
                 continue
             }
             let pos = viewportPositions[id]
-            if let path = op.path {
-                graphicsContext.transform = .init(translationX: pos.x, y: pos.y)
-                graphicsContext.fill(
-                    path,
-                    with: op.fill ?? .defaultNodeShading
-                )
-                if let strokeEffect = op.stroke {
-                    switch strokeEffect.color {
-                    case .color(let color):
-                        graphicsContext.stroke(
-                            path,
-                            with: .color(color),
-                            style: strokeEffect.style ?? .defaultLinkStyle
-                        )
-                    case .clip:
-                        graphicsContext.blendMode = .clear
-                        graphicsContext.stroke(
-                            path,
-                            with: .color(.black),
-                            style: strokeEffect.style ?? .defaultLinkStyle
-                        )
-                        graphicsContext.blendMode = .normal
-                    }
-                }
-            } else {
-                graphicsContext.transform = .identity
-                let rect = CGRect(
-                    origin: (pos - op.mark.radius).cgPoint,
-                    size: CGSize(
-                        width: op.mark.radius * 2, height: op.mark.radius * 2
-                    )
-                )
-                graphicsContext.fill(
-                    Path(ellipseIn: rect),
-                    with: op.fill ?? .defaultNodeShading
-                )
 
-                if let strokeEffect = op.stroke {
-                    switch strokeEffect.color {
-                    case .color(let color):
-                        graphicsContext.stroke(
-                            Path(ellipseIn: rect),
-                            with: .color(color),
-                            style: strokeEffect.style ?? .defaultLinkStyle
+            graphicsContext.transform = .init(translationX: pos.x, y: pos.y)
+
+            let finalizedPath: Path =
+                switch op.pathOrSymbolSize {
+                case .path(let path): path
+                case .symbolSize(let size):
+                    Path(
+                        ellipseIn: CGRect(
+                            origin: CGPoint(x: -size.width / 2, y: -size.height / 2),
+                            size: size
                         )
-                    case .clip:
-                        graphicsContext.blendMode = .clear
-                        graphicsContext.stroke(
-                            Path(ellipseIn: rect),
-                            with: .color(.black),
-                            style: strokeEffect.style ?? .defaultLinkStyle
-                        )
-                        graphicsContext.blendMode = .normal
-                    }
+                    )
+                }
+
+            graphicsContext.fill(
+                finalizedPath,
+                with: op.fill ?? .defaultNodeShading
+            )
+            if let strokeEffect = op.stroke {
+                switch strokeEffect.color {
+                case .color(let color):
+                    graphicsContext.stroke(
+                        finalizedPath,
+                        with: .color(color),
+                        style: strokeEffect.style ?? .defaultLinkStyle
+                    )
+                case .clip:
+                    graphicsContext.blendMode = .clear
+                    graphicsContext.stroke(
+                        finalizedPath,
+                        with: .color(.black),
+                        style: strokeEffect.style ?? .defaultLinkStyle
+                    )
+                    graphicsContext.blendMode = .normal
                 }
             }
         }

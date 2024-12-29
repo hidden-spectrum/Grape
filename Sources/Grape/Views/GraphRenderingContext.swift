@@ -24,8 +24,9 @@ public struct _GraphRenderingContext<NodeID: Hashable> {
     @usableFromInline
     internal var nodeOperations: [RenderOperation<NodeID>.Node] = []
 
+    /// A lookup table for the hit area of each node (width * height).
     @usableFromInline
-    internal var nodeRadiusSquaredLookup: [NodeID: Double] = [:]
+    internal var nodeHitSizeAreaLookup: [NodeID: Double] = [:]
 
     @usableFromInline
     internal var linkOperations: [RenderOperation<NodeID>.Link] = []

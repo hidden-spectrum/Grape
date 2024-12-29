@@ -1,7 +1,14 @@
 import SwiftUI
 
 @usableFromInline
+enum PathOrSymbolSize {
+    case path(Path)
+    case symbolSize(CGSize)
+}
+
+@usableFromInline
 internal enum RenderOperation<NodeID: Hashable> {
+
     @usableFromInline
     struct Node {
         @usableFromInline
@@ -11,19 +18,19 @@ internal enum RenderOperation<NodeID: Hashable> {
         @usableFromInline
         let stroke: GraphContentEffect.Stroke?
         @usableFromInline
-        let path: Path?
+        let pathOrSymbolSize: PathOrSymbolSize
 
         @inlinable
         init(
             _ mark: NodeMark<NodeID>,
             _ fill: GraphicsContext.Shading?,
             _ stroke: GraphContentEffect.Stroke?,
-            _ path: Path?
+            _ pathOrSymbolSize: PathOrSymbolSize
         ) {
             self.mark = mark
             self.fill = fill
             self.stroke = stroke
-            self.path = path
+            self.pathOrSymbolSize = pathOrSymbolSize
         }
     }
 
@@ -53,7 +60,7 @@ extension RenderOperation.Node: Equatable {
     @inlinable
     internal static func == (lhs: Self, rhs: Self) -> Bool {
         let fillEq = lhs.fill == nil && rhs.fill == nil
-        let pathEq = lhs.path == nil && rhs.path == nil
+        let pathEq = lhs.pathOrSymbolSize == nil && rhs.pathOrSymbolSize == nil
         return lhs.mark == rhs.mark
             && fillEq
             && lhs.stroke == rhs.stroke

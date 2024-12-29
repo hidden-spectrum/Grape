@@ -34,7 +34,13 @@ internal struct GraphRenderingStates<NodeID: Hashable> {
     var symbolShape: [Path] = []
 
     @inlinable
-    var currentSymbolShape: Path? { symbolShape.last }
+    var currentSymbolShapeOrSize: PathOrSymbolSize {
+        if let shape = symbolShape.last {
+            return .path(shape)
+        } else {
+            return .symbolSize(currentSymbolSizeOrDefault)
+        }
+    }
 
     @usableFromInline
     var symbolSize: [CGSize] = []
