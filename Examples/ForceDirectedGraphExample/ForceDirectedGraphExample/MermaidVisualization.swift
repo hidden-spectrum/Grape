@@ -9,43 +9,53 @@ import SwiftUI
 import RegexBuilder
 import Grape
 import simd
+import Observation
+
+@Observable
+final class MermaidModel {
+    var graphSyntax: String = """
+                              Alice → Bob
+                              Bob → Cindy
+                              Cindy → David
+                              David → Emily
+                              Emily → Frank
+                              Frank → Grace
+                              Grace → Henry
+                              Henry → Isabella
+                              Isabella → Jack
+                              Jack → Karen
+                              Karen → Liam
+                              Liam → Monica
+                              Monica → Nathan
+                              Nathan → Olivia
+                              Olivia → Peter
+                              Peter → Quinn
+                              Quinn → Rachel
+                              Rachel → Steve
+                              Steve → Tiffany
+                              Tiffany → Umar
+                              Umar → Violet
+                              Violet → William
+                              William → Xavier
+                              Xavier → Yolanda
+                              Yolanda → Zack
+                              Zack → Alice
+                              Jack -> Rachel
+                              Xavier -> José
+                              José -> アキラ
+                              アキラ -> Liam
+                              """
+    
+    var tappedNode: String? = nil
+    
+    var parsedGraph: ([String], [(String, String)]) {
+        parseMermaid(graphSyntax)
+    }
+}
 
 struct MermaidVisualization: View {
     
-    @State private var text: String = """
-    Alice → Bob
-    Bob → Cindy
-    Cindy → David
-    David → Emily
-    Emily → Frank
-    Frank → Grace
-    Grace → Henry
-    Henry → Isabella
-    Isabella → Jack
-    Jack → Karen
-    Karen → Liam
-    Liam → Monica
-    Monica → Nathan
-    Nathan → Olivia
-    Olivia → Peter
-    Peter → Quinn
-    Quinn → Rachel
-    Rachel → Steve
-    Steve → Tiffany
-    Tiffany → Umar
-    Umar → Violet
-    Violet → William
-    William → Xavier
-    Xavier → Yolanda
-    Yolanda → Zack
-    Zack → Alice
-    Jack -> Rachel
-    Xavier -> José
-    José -> アキラ
-    アキラ -> Liam
-    """
-    
-    @State private var tappedNode: String? = nil
+    @State private var model: MermaidModel = .init()
     
     // the view for label
     @ViewBuilder
@@ -70,13 +80,9 @@ struct MermaidVisualization: View {
             .padding()
     }
     
-    var parsedGraph: ([String], [(String, String)]) {
-        parseMermaid(text)
-    }
-    
     var body: some View {
+        let parsedGraph = model.parsedGraph
         ForceDirectedGraph {
-            
             Series(parsedGraph.0) { node in
                 NodeMark(id: node)
                     .symbol(.circle)
@@ -105,29 +111,40 @@ struct MermaidVisualization: View {
                     if let nodeID = proxy.locateNode(at: .init(x: value.x, y: value.y)) {
                         guard let nodeID = nodeID as? String else { return }
                         print(nodeID)
-                        tappedNode = nodeID
+                        model.tappedNode = nodeID
                     }
                 }
         })
         .ignoresSafeArea()
         #if !os(visionOS)
         .inspector(isPresented: .constant(true)) {
-            VStack {
-                Text("Tapped: \(tappedNode ?? "nil")")
-                    .font(.title2)
-                
-                Divider()
-                
-                Text("Edit the mermaid syntaxes to update the graph")
-                    .font(.title2)
-                TextEditor(text: $text)
-                    .fontDesign(.monospaced)
-                
-            }.padding(.top)
+            MermaidInspector(model: model)
         }
         #endif
+    }
+}
 
+struct MermaidInspector: View {
+    
+    @State var model: MermaidModel
+    
+    init(model: MermaidModel) {
+        self.model = model
+    }
+    
+    var body: some View {
+        VStack {
+            Text("Tapped: \(model.tappedNode ?? "nil")")
+                .font(.title2)
             
+            Divider()
+            
+            Text("Edit the mermaid syntaxes to update the graph")
+                .font(.title2)
+            TextEditor(text: $model.graphSyntax)
+                .fontDesign(.monospaced)
+            
+        }.padding(.top)
     }
 }
 
