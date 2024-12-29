@@ -19,6 +19,14 @@ extension ForceDirectedGraphModel {
             else { continue }
             let iPos = simulationContext.storage.kinetics.position[i]
             
+            /// https://github.com/li3zhen1/Grape/pull/62#issue-2753932460
+            ///
+            /// ```swift
+            /// let actualRadius = pow((iRadius2 * 0.5), 0.5) * 0.5
+            /// let scaledRadius = actualRadius / max(.ulpOfOne, viewportScale)
+            /// let scaledRadius2 = pow(scaledRadius, 2.0)
+            /// ```
+            ///
             let scaledRadius2 = iRadius2 / max(.ulpOfOne, (8.0 * viewportScale * viewportScale))
             let length2 = simd_length_squared(locationInSimulationCoordinate - iPos)
             
