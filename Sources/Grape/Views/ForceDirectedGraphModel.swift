@@ -3,8 +3,24 @@ import Foundation
 import Observation
 import SwiftUI
 
+
 @MainActor
-public final class ForceDirectedGraphModel<Content: GraphContent> {
+public protocol _AnyGraphProxyProtocol {
+    @inlinable
+    func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable?
+}
+
+extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
+    public func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable? {
+        if let nodeID = findNode(at: locationInViewportCoordinate) {
+            return AnyHashable(nodeID)
+        } else {
+            return nil
+        }
+    }
+}
+@MainActor
+public final class ForceDirectedGraphModel<NodeID: Hashable> {
 
     @usableFromInline
     internal struct ObsoleteState {
@@ -12,7 +28,7 @@ public final class ForceDirectedGraphModel<Content: GraphContent> {
         var cgSize: CGSize
     }
 
-    public typealias NodeID = Content.NodeID
+    // public typealias NodeID = Content.NodeID
 
     @usableFromInline
     var graphRenderingContext: _GraphRenderingContext<NodeID>
@@ -128,8 +144,8 @@ public final class ForceDirectedGraphModel<Content: GraphContent> {
     @usableFromInline
     var _onNodeDragEnded: ((NodeID, CGPoint) -> Bool)? = nil
 
-    @usableFromInline
-    var _onNodeTapped: ((NodeID?) -> Void)? = nil
+    // @usableFromInline
+    // var _onNodeTapped: ((NodeID?) -> Void)? = nil
 
     @usableFromInline
     var _onViewportTransformChanged: ((ViewportTransform, Bool) -> Void)? = nil

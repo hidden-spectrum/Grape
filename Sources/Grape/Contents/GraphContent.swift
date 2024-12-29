@@ -7,5 +7,3 @@ public protocol GraphContent<NodeID> {
     @inlinable
     func _attachToGraphRenderingContext(_ context: inout _GraphRenderingContext<NodeID>)
 }
-
-

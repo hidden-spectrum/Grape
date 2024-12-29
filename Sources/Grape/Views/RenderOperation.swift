@@ -1,7 +1,7 @@
 import SwiftUI
 
 @usableFromInline
-enum PathOrSymbolSize {
+enum PathOrSymbolSize: Equatable {
     case path(Path)
     case symbolSize(CGSize)
 }
@@ -60,7 +60,7 @@ extension RenderOperation.Node: Equatable {
     @inlinable
     internal static func == (lhs: Self, rhs: Self) -> Bool {
         let fillEq = lhs.fill == nil && rhs.fill == nil
-        let pathEq = lhs.pathOrSymbolSize == nil && rhs.pathOrSymbolSize == nil
+        let pathEq = lhs.pathOrSymbolSize == rhs.pathOrSymbolSize
         return lhs.mark == rhs.mark
             && fillEq
             && lhs.stroke == rhs.stroke

@@ -13,6 +13,7 @@ extension ForceDirectedGraph: View {
         //     canvas
         // }
         canvas
+            .preference(key: GraphProxyKey.self, value: .init(model))
             .onChange(
                 of: self._graphRenderingContextShadow,
                 initial: false  // Don't trigger on initial value, keep `changeMessage` as "N/A"
@@ -77,7 +78,7 @@ extension ForceDirectedGraph: View {
             .onChanged(onDragChange)
             .onEnded(onDragEnd)
         )
-        .onTapGesture(count: 1, perform: onTapGesture)
+        // .onTapGesture(count: 1, perform: onTapGesture)
 #endif
 
 #if os(iOS) || os(macOS)

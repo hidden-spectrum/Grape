@@ -99,9 +99,16 @@ struct MermaidVisualization: View {
         } emittingNewNodesWithStates: { id in
             KineticState(position: getInitialPosition(id: id, r: 100))
         }
-        .onNodeTapped {
-            tappedNode = $0
-        }
+        .graphOverlay(content: { proxy in
+            Rectangle().fill(.clear).contentShape(Rectangle())
+                .onTapGesture { value in
+                    if let nodeID = proxy.locateNode(at: .init(x: value.x, y: value.y)) {
+                        guard let nodeID = nodeID as? String else { return }
+                        print(nodeID)
+                        tappedNode = nodeID
+                    }
+                }
+        })
         .ignoresSafeArea()
         #if !os(visionOS)
         .inspector(isPresented: .constant(true)) {
