@@ -1,6 +1,7 @@
 import ForceSimulation
 import SwiftUI
 
+
 public struct ForceDirectedGraph<NodeID: Hashable, Content: GraphContent>
 where NodeID == Content.NodeID {
 
@@ -28,7 +29,7 @@ where NodeID == Content.NodeID {
     internal let _graphRenderingContextShadow: _GraphRenderingContext<NodeID>
 
     @usableFromInline
-    internal let _forceDescriptors: [SealedForce2D.ForceEntry]
+    internal let _forceDescriptors: SealedForceDescriptor<NodeID>
 
     // // TBD: Some state to be retained when the graph is updated
     // @State
@@ -53,11 +54,11 @@ where NodeID == Content.NodeID {
     /// The default force to be applied to the graph
     ///
     /// - Returns: The default forces
-    @SealedForce2DBuilder
+    @SealedForceDescriptorBuilder<NodeID>
     @inlinable
-    static public func defaultForce() -> [SealedForce2D.ForceEntry] {
-        ManyBodyForce()
-        LinkForce()
+    static public func defaultForce() -> SealedForceDescriptor<NodeID> {
+        LinkForce<NodeID>() 
+        CenterForce<NodeID>()
     }
 
     /// Creates a force-directed graph view.
@@ -68,8 +69,8 @@ where NodeID == Content.NodeID {
     ///   - states: The initial state of the force-directed graph.
     ///   - ticksPerSecond: The number of ticks per second. Notice that this only determines the frequency of
     ///     the simulation updates, and the actual frame rate may be different.
-    ///   - graph: The graph content. The `ForceDirectedGraph` will observe the changes of the graph content 
-    ///     and try to update the elements with minimal changes across the parameter updates. 
+    ///   - graph: The graph content. The `ForceDirectedGraph` will observe the changes of the graph content
+    ///     and try to update the elements with minimal changes across the parameter updates.
     ///   - force: The forces to be applied to the graph.
     ///   - emittingNewNodesWithStates: Tells the simulation where to place the new nodes and provide their
     ///     initial kinetic states. This is only applied on the new nodes that is not seen before when the
@@ -80,7 +81,7 @@ where NodeID == Content.NodeID {
         states: ForceDirectedGraphState = ForceDirectedGraphState(),
         ticksPerSecond: Double = 60.0,
         @GraphContentBuilder<NodeID> graph: () -> Content,
-        @SealedForce2DBuilder force: () -> [SealedForce2D.ForceEntry] = Self.defaultForce,
+        @SealedForceDescriptorBuilder<NodeID> force: () -> SealedForceDescriptor<NodeID> = Self.defaultForce,
         emittingNewNodesWithStates: @escaping (NodeID) -> KineticState = defaultKineticStateProvider
     ) {
 
@@ -91,10 +92,9 @@ where NodeID == Content.NodeID {
 
         self._forceDescriptors = force()
 
-        let force = SealedForce2D(self._forceDescriptors)
         self.model = .init(
             gctx,
-            force,
+            forceDescriptor: self._forceDescriptors,
             stateMixin: states,
             emittingNewNodesWith: emittingNewNodesWithStates,
             ticksPerSecond: ticksPerSecond

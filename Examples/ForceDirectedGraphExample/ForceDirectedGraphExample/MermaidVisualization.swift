@@ -99,9 +99,9 @@ struct MermaidVisualization: View {
             .stroke(.black, StrokeStyle(lineWidth: 2.0, lineCap: .round, lineJoin: .round))
             
         } force: {
-            ManyBodyForce()
-            LinkForce(originalLength: .constant(70))
-            CenterForce()
+            ManyBodyForce<String>()
+            LinkForce<String>(originalLength: .constant(70))
+            CenterForce<String>()
         } emittingNewNodesWithStates: { id in
             KineticState(position: getInitialPosition(id: id, r: 100))
         }

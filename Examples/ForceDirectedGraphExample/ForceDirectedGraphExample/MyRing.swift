@@ -45,13 +45,13 @@ struct MyRing: View {
             .stroke(.black, StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
             
         } force: {
-            ManyBodyForce(strength: -15)
-            LinkForce(
+            ManyBodyForce<Int>(strength: -15)
+            LinkForce<Int>(
                 originalLength: .constant(20.0),
-                stiffness: .weightedByDegree(k: { _, _ in 3.0})
+                stiffness: .weightedByDegree { _, _ in 3.0}
             )
-            CenterForce()
-            CollideForce()
+            CenterForce<Int>()
+            CollideForce<Int>()
         }
         .graphOverlay { proxy in
             Rectangle().fill(.clear).contentShape(Rectangle())
