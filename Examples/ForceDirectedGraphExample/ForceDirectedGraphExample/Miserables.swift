@@ -66,9 +66,9 @@ struct MiserableGraph: View {
             }
             
         } force: {
-            ManyBodyForce<String>(strength: -20)
-            CenterForce<String>()
-            LinkForce<String>(
+            .manyBody(strength: -20)
+            .center()
+            .link(
                 originalLength: .constant(35.0),
                 stiffness: .weightedByDegree { _, _ in 1.0}
             )

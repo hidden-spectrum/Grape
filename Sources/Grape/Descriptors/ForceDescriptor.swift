@@ -68,6 +68,119 @@ public struct SealedForceDescriptor<NodeID: Hashable>: _ForceDescriptor {
         }
     }
 
+
+    @inlinable
+    @discardableResult
+    public static func center(x: Double = 0.0, y: Double = 0.0, strength: Double = 0.5) -> Self {
+        SealedForceDescriptor([.center(CenterForce(x: x, y: y, strength: strength))])
+    }
+
+    @inlinable
+    @discardableResult
+    public static func manyBody(strength: Double = -30.0, mass: ManyBodyForce<NodeID>.NodeMass = .constant(1.0), theta: Double = 0.9) -> Self {
+        SealedForceDescriptor([.manyBody(ManyBodyForce(strength: strength, mass: mass, theta: theta))])
+    }
+
+    @inlinable
+    @discardableResult
+    public static func link(
+        originalLength: LinkForce<NodeID>.LinkLength = .constant(30.0),
+        stiffness: LinkForce<NodeID>.Stiffness = .weightedByDegree { _, _ in 1.0 },
+        iterationsPerTick: UInt = 1
+    ) -> Self {
+        SealedForceDescriptor([.link(LinkForce(originalLength: originalLength, stiffness: stiffness, iterationsPerTick: iterationsPerTick))])
+    }
+
+    @inlinable
+    @discardableResult
+    public static func collide(
+        strength: Double = 0.5,
+        radius: CollideForce<NodeID>.CollideRadius = .constant(3.0),
+        iterationsPerTick: UInt = 1
+    ) -> Self {
+        SealedForceDescriptor([.collide(CollideForce(strength: strength, radius: radius, iterationsPerTick: iterationsPerTick))])
+    }
+
+    @inlinable
+    @discardableResult
+    public static func position(
+        direction: Kinetics2D.DirectionOfPositionForce,
+        targetOnDirection: PositionForce<NodeID>.TargetOnDirection,
+        strength: PositionForce<NodeID>.PositionStrength = .constant(1.0)
+    ) -> Self {
+        SealedForceDescriptor([.position(PositionForce(direction: direction, targetOnDirection: targetOnDirection, strength: strength))])
+    }
+
+    @inlinable
+    @discardableResult
+    public static func radial(
+        center: SIMD2<Double> = .zero,
+        strength: RadialForce<NodeID>.RadialStrength = .constant(1.0),
+        radius: RadialForce<NodeID>.Radius = .constant(3.0)
+    ) -> Self {
+        SealedForceDescriptor([.radial(RadialForce(center: center, strength: strength, radius: radius))])
+    }
+
+
+    @inlinable
+    @discardableResult
+    public consuming func center(x: Double = 0.0, y: Double = 0.0, strength: Double = 0.5) -> Self {
+        storage.append(.center(CenterForce(x: x, y: y, strength: strength)))
+        return self
+    }
+
+    @inlinable
+    @discardableResult
+    public consuming func manyBody(strength: Double = -30.0, mass: ManyBodyForce<NodeID>.NodeMass = .constant(1.0), theta: Double = 0.9) -> Self {
+        storage.append(.manyBody(ManyBodyForce(strength: strength, mass: mass, theta: theta)))
+        return self
+    }
+
+    @inlinable
+    @discardableResult
+    public consuming func link(
+        originalLength: LinkForce<NodeID>.LinkLength = .constant(30.0),
+        stiffness: LinkForce<NodeID>.Stiffness = .weightedByDegree { _, _ in 1.0 },
+        iterationsPerTick: UInt = 1
+    ) -> Self{
+        storage.append(.link(LinkForce(originalLength: originalLength, stiffness: stiffness, iterationsPerTick: iterationsPerTick)))
+        return self
+    }
+
+    @inlinable
+    @discardableResult
+    public consuming func collide(
+        strength: Double = 0.5,
+        radius: CollideForce<NodeID>.CollideRadius = .constant(3.0),
+        iterationsPerTick: UInt = 1
+    ) -> Self {
+        storage.append(.collide(CollideForce(strength: strength, radius: radius, iterationsPerTick: iterationsPerTick)))
+        return self
+    }
+
+    @inlinable
+    @discardableResult
+    public consuming func position(
+        direction: Kinetics2D.DirectionOfPositionForce,
+        targetOnDirection: PositionForce<NodeID>.TargetOnDirection,
+        strength: PositionForce<NodeID>.PositionStrength = .constant(1.0)
+    ) -> Self{
+        storage.append(.position(PositionForce(direction: direction, targetOnDirection: targetOnDirection, strength: strength)))
+        return self
+    }
+
+    @inlinable
+    @discardableResult
+    public consuming func radial(
+        center: SIMD2<Double> = .zero,
+        strength: RadialForce<NodeID>.RadialStrength = .constant(1.0),
+        radius: RadialForce<NodeID>.Radius = .constant(3.0)
+    ) -> Self{
+        storage.append(.radial(RadialForce(center: center, strength: strength, radius: radius)))
+        return self
+    }
+
+
     @inlinable
     init(_ storage: [Entry] = []) {
         self.storage = storage

@@ -54,11 +54,9 @@ where NodeID == Content.NodeID {
     /// The default force to be applied to the graph
     ///
     /// - Returns: The default forces
-    @SealedForceDescriptorBuilder<NodeID>
     @inlinable
     static public func defaultForce() -> SealedForceDescriptor<NodeID> {
-        LinkForce<NodeID>() 
-        CenterForce<NodeID>()
+        .link().center()
     }
 
     /// Creates a force-directed graph view.
@@ -81,7 +79,7 @@ where NodeID == Content.NodeID {
         states: ForceDirectedGraphState = ForceDirectedGraphState(),
         ticksPerSecond: Double = 60.0,
         @GraphContentBuilder<NodeID> graph: () -> Content,
-        @SealedForceDescriptorBuilder<NodeID> force: () -> SealedForceDescriptor<NodeID> = Self.defaultForce,
+        force buildForce: () -> SealedForceDescriptor<NodeID> = defaultForce,
         emittingNewNodesWithStates: @escaping (NodeID) -> KineticState = defaultKineticStateProvider
     ) {
 
@@ -90,7 +88,7 @@ where NodeID == Content.NodeID {
 
         self._graphRenderingContextShadow = gctx
 
-        self._forceDescriptors = force()
+        self._forceDescriptors = buildForce()
 
         self.model = .init(
             gctx,
