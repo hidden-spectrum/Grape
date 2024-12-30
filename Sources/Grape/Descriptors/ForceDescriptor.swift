@@ -6,6 +6,13 @@ public enum NodeAttribute<NodeID: Hashable, Attribute> {
     case constant(Attribute)
 }
 
+extension NodeAttribute: ExpressibleByFloatLiteral where Attribute == Double {
+    @inlinable
+    public init(floatLiteral value: Double) {
+        self = .constant(value)
+    }
+}
+
 extension NodeAttribute {
     @inlinable
     func makeCompactRepresentation(nodeIDs: [NodeID]) -> ForceSimulation.AttributeDescriptor<Attribute> {
@@ -270,14 +277,26 @@ public struct ManyBodyForce<NodeID: Hashable>: _ForceDescriptor {
 
 public struct LinkForce<NodeID: Hashable>: _ForceDescriptor {
 
-    public enum Stiffness {
+    public enum Stiffness: ExpressibleByFloatLiteral {
         case constant(Double)
         case weightedByDegree((EdgeID<NodeID>, LinkLookup<NodeID>) -> Double)
+        
+        @inlinable
+        public init(floatLiteral value: Double) {
+            self = .weightedByDegree({ _, _ in
+                value
+            })
+        }
     }
 
-    public enum LinkLength {
+    public enum LinkLength: ExpressibleByFloatLiteral {
         case constant(Double)
         case varied((EdgeID<NodeID>, LinkLookup<NodeID>) -> Double)
+        
+        @inlinable
+        public init(floatLiteral value: Double) {
+            self = .constant(value)
+        }
     }
     public var stiffness: Stiffness
     public var originalLength: LinkLength

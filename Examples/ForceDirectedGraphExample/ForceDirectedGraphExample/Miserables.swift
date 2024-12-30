@@ -69,7 +69,7 @@ struct MiserableGraph: View {
             .manyBody(strength: -20)
             .center()
             .link(
-                originalLength: .constant(35.0),
+                originalLength: 35.0,
                 stiffness: .weightedByDegree { _, _ in 1.0}
             )
         }

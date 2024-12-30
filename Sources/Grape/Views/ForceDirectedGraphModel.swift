@@ -9,7 +9,7 @@ public protocol _AnyGraphProxyProtocol {
     func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable?
 
     @inlinable
-    func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?)
+    func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?, minimumAlpha: Double)
 
     @inlinable
     var kineticAlpha: Double { get nonmutating set }
@@ -38,10 +38,16 @@ extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
     }
 
     @inlinable
-    public func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?) {
+    public func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?, minimumAlpha: Double) {
         guard let nodeID = nodeID as? NodeID else {
             return
         }
+
+        simulationContext.storage.kinetics.alpha = max(
+            simulationContext.storage.kinetics.alpha, 
+            minimumAlpha
+        )
+
         let newLocationInSimulation: SIMD2<Double>? =
             if let fixation {
                 finalTransform.invert(fixation.simd)
@@ -58,8 +64,8 @@ extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
         get {
             simulationContext.storage.kinetics.alpha
         }
-        set {
-            simulationContext.storage.kinetics.alpha = newValue
+        _modify {
+            yield &simulationContext.storage.kinetics.alpha
         }
     }
 }
@@ -720,7 +726,7 @@ extension ForceDirectedGraphModel {
                 count: self.simulationContext.storage.kinetics.position.count
             )
         }
-        debugPrint("[REVIVED]")
+        debugPrint("Graph state revived. Note this might cause expensive rerendering when combined with `richLabel` with unstable id.")
     }
 
 }
