@@ -100,7 +100,7 @@ struct MermaidVisualization: View {
             
         } force: {
             .manyBody()
-            .link(originalLength: .constant(70))
+            .link(originalLength: 70.0)
             .center()
         } emittingNewNodesWithStates: { id in
             KineticState(position: getInitialPosition(id: id, r: 100))
@@ -111,7 +111,6 @@ struct MermaidVisualization: View {
                 .onTapGesture { value in
                     if let nodeID = proxy.locateNode(at: .init(x: value.x, y: value.y)) {
                         guard let nodeID = nodeID as? String else { return }
-                        print(nodeID)
                         model.tappedNode = nodeID
                     }
                 }

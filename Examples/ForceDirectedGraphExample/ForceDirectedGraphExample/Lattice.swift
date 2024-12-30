@@ -11,7 +11,7 @@ import Grape
 
 struct Lattice: View {
     
-    let width = 20
+    let width = 30
     let edge: [(Int, Int)]
     
     @State var graphStates = ForceDirectedGraphState(
@@ -33,7 +33,6 @@ struct Lattice: View {
         self.edge = edge
     }
     
-    @inlinable
     var body: some View {
         ForceDirectedGraph(states: graphStates) {
             
@@ -51,11 +50,15 @@ struct Lattice: View {
             
         } force: {
             .link(
-                originalLength: .constant(0.8),
+                originalLength: 0.8,
                 stiffness: .weightedByDegree { _, _ in 1.0 }
             )
             .manyBody(strength: -0.8)
         }
+        .graphOverlay(content: { proxy in
+            Rectangle().fill(.clear).contentShape(Rectangle())
+                .withGraphDragGesture(proxy)
+        })
         .toolbar {
             GraphStateToggle(graphStates: graphStates)
         }

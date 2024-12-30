@@ -14,43 +14,44 @@ struct MyRing: View {
     
     @State var graphStates = ForceDirectedGraphState()
     
+    @State var draggingNodeID: Int? = nil
+    
+    static let storkeStyle = StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round)
+    
     var body: some View {
         
         ForceDirectedGraph(states: graphStates) {
             Series(0..<20) { i in
+                
                 NodeMark(id: 3 * i + 0)
                     .symbolSize(radius: 6.0)
                     .foregroundStyle(.green)
-                    .stroke(.clear)
+                    .stroke(3*i+0 == draggingNodeID ? .black : .clear, Self.storkeStyle)
+                    
                 NodeMark(id: 3 * i + 1)
                     .symbol(.pentagon)
                     .symbolSize(radius:10)
                     .foregroundStyle(.blue)
-                    .stroke(.clear)
+                    .stroke(3*i+1 == draggingNodeID ? .black : .clear, Self.storkeStyle)
+                
                 NodeMark(id: 3 * i + 2)
                     .symbol(.circle)
                     .symbolSize(radius:6.0)
                     .foregroundStyle(.yellow)
-                    .stroke(.clear)
+                    .stroke(3*i+2 == draggingNodeID ? .black : .clear, Self.storkeStyle)
                 
                 LinkMark(from: 3 * i + 0, to: 3 * i + 1)
                 LinkMark(from: 3 * i + 1, to: 3 * i + 2)
-                
                 LinkMark(from: 3 * i + 0, to: 3 * ((i + 1) % 20) + 0)
                 LinkMark(from: 3 * i + 1, to: 3 * ((i + 1) % 20) + 1)
                 LinkMark(from: 3 * i + 2, to: 3 * ((i + 1) % 20) + 2)
-                
-                
             }
-            .stroke(
-                .black,
-                StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round)
-            )
+            .stroke(.black, Self.storkeStyle)
             
         } force: {
             .manyBody(strength: -15)
             .link(
-                originalLength: .constant(20.0),
+                originalLength: 20.0,
                 stiffness: .weightedByDegree { _, _ in 3.0}
             )
             .center()
@@ -69,10 +70,16 @@ struct MyRing: View {
     func describe(_ state: GraphDragState?) {
         switch state {
         case .node(let anyHashable):
-            print("Dragging \(anyHashable as! Int)")
+            let id = anyHashable as! Int
+            if draggingNodeID != id {
+                draggingNodeID = id
+                print("Dragging \(id)")
+            }
         case .background(let start):
+            draggingNodeID = nil
             print("Dragging \(start)")
         case nil:
+            draggingNodeID = nil
             print("Drag ended")
         }
     }

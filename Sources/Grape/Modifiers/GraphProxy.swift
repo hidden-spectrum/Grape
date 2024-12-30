@@ -26,8 +26,8 @@ extension GraphProxy: _AnyGraphProxyProtocol {
     }
 
     @inlinable
-    public func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?) {
-        storage?.setNodeFixation(nodeID: nodeID, fixation: fixation)
+    public func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?, minimumAlpha: Double = 0.5) {
+        storage?.setNodeFixation(nodeID: nodeID, fixation: fixation, minimumAlpha: minimumAlpha)
     }
 
     @inlinable
