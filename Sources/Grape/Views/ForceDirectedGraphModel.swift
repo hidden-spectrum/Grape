@@ -184,7 +184,6 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     @usableFromInline
     var _onTicked: ((UInt) -> Void)? = nil
 
-
     @usableFromInline
     var _onViewportTransformChanged: ((ViewportTransform, Bool) -> Void)? = nil
 
@@ -203,7 +202,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     @inlinable
     init(
         _ graphRenderingContext: _GraphRenderingContext<NodeID>,
-        _ forceField: SealedForce2D,
+        forceDescriptor: SealedForceDescriptor<NodeID>,
         stateMixin: ForceDirectedGraphState,
         emittingNewNodesWith: @escaping (NodeID) -> KineticState = { _ in
             .init(position: .zero)
@@ -217,7 +216,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
         self.velocityDecay = velocityDecay
         let _simulationContext = SimulationContext.create(
             for: graphRenderingContext,
-            with: forceField,
+            makeForceField: forceDescriptor._makeForceField,
             velocityDecay: velocityDecay
         )
 
@@ -235,7 +234,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     @inlinable
     convenience init(
         _ graphRenderingContext: _GraphRenderingContext<NodeID>,
-        _ forceField: SealedForce2D,
+        forceDescriptor: SealedForceDescriptor<NodeID>,
         stateMixin: ForceDirectedGraphState,
         emittingNewNodesWith: @escaping (NodeID) -> KineticState = { _ in
             .init(position: .zero)
@@ -244,7 +243,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     ) {
         self.init(
             graphRenderingContext,
-            forceField,
+            forceDescriptor: forceDescriptor,
             stateMixin: stateMixin,
             emittingNewNodesWith: emittingNewNodesWith,
             ticksPerSecond: ticksPerSecond,
@@ -683,13 +682,13 @@ extension ForceDirectedGraphModel {
     @inlinable
     func revive(
         for newContext: _GraphRenderingContext<NodeID>,
-        with newForceField: SealedForce2D,
+        forceDescriptor: SealedForceDescriptor<NodeID>,
         alpha: Double
     ) {
         var newContext = newContext
         self.simulationContext.revive(
             for: newContext,
-            with: newForceField,
+            makeForceField: forceDescriptor._makeForceField,
             velocityDecay: velocityDecay,
             emittingNewNodesWith: self._emittingNewNodesWith
         )

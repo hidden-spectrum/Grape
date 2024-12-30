@@ -50,11 +50,11 @@ struct Lattice: View {
             }
             
         } force: {
-            LinkForce(
+            .link(
                 originalLength: .constant(0.8),
                 stiffness: .weightedByDegree { _, _ in 1.0 }
             )
-            ManyBodyForce(strength: -0.8)
+            .manyBody(strength: -0.8)
         }
         .toolbar {
             GraphStateToggle(graphStates: graphStates)

@@ -33,7 +33,7 @@ internal struct SimulationContext<NodeID: Hashable> {
     internal var nodeIndices: [NodeID]
 
     @inlinable
-    internal init(
+    package init(
         _ storage: Simulation2D<ForceField>,
         _ nodeIndexLookup: [NodeID: Int],
         _ nodeIndices: [NodeID]
@@ -46,10 +46,11 @@ internal struct SimulationContext<NodeID: Hashable> {
 }
 
 extension SimulationContext {
-    @inlinable
+
+    @inlinable 
     public static func create(
         for graphRenderingContext: _GraphRenderingContext<NodeID>,
-        with forceField: ForceField,
+        makeForceField: (inout SealedForce2D, [NodeID]) -> Void,
         velocityDecay: Vector.Scalar
     ) -> Self {
         let nodes = graphRenderingContext.nodes
@@ -59,6 +60,11 @@ extension SimulationContext {
                 ($0.element.id, $0.offset)
             }
         )
+
+        let nodeIDs = nodes.map { $0.id }
+
+        var forceField = SealedForce2D([])
+        makeForceField(&forceField, nodeIDs)
 
         let links = graphRenderingContext.edges.map {
             EdgeID<Int>(
@@ -78,11 +84,43 @@ extension SimulationContext {
         )
     }
 
+    // @inlinable
+    // public static func create(
+    //     for graphRenderingContext: _GraphRenderingContext<NodeID>,
+    //     with forceField: ForceField,
+    //     velocityDecay: Vector.Scalar
+    // ) -> Self {
+    //     let nodes = graphRenderingContext.nodes
+
+    //     let nodeIndexLookup = Dictionary(
+    //         uniqueKeysWithValues: nodes.enumerated().map {
+    //             ($0.element.id, $0.offset)
+    //         }
+    //     )
+
+    //     let links = graphRenderingContext.edges.map {
+    //         EdgeID<Int>(
+    //             source: nodeIndexLookup[$0.id.source]!,
+    //             target: nodeIndexLookup[$0.id.target]!
+    //         )
+    //     }
+    //     return .init(
+    //         .init(
+    //             nodeCount: nodes.count,
+    //             links: links,
+    //             forceField: forceField,
+    //             velocityDecay: velocityDecay
+    //         ),
+    //         nodeIndexLookup,
+    //         nodes.map(\.id)
+    //     )
+    // }
+
     /// reuse the same simulation context for new graph
     @inlinable
     public mutating func revive(
         for newContext: _GraphRenderingContext<NodeID>,
-        with newForceField: ForceField,
+        makeForceField: (inout SealedForce2D, [NodeID]) -> Void,
         velocityDecay: Vector.Scalar,
         emittingNewNodesWith states: (NodeID) -> KineticState = { _ in .init(position: .zero) }
     ) {
@@ -93,6 +131,11 @@ extension SimulationContext {
                 ($0.element.id, $0.offset)
             }
         )
+
+        let nodeIDs = newNodes.map { $0.id }
+
+        var newForceField = SealedForce2D([])
+        makeForceField(&newForceField, nodeIDs)
 
         let newLinks = newContext.edges.map {
             EdgeID<Int>(

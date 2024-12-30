@@ -167,9 +167,9 @@ struct MyGraph: View {
             }
             
         } force: {
-            LinkForce()
-            CenterForce()
-            ManyBodyForce()
+            .link()
+            .center()
+            .manyBody()
         }
     }
 }

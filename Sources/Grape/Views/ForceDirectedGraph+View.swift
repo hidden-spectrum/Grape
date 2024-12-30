@@ -20,7 +20,7 @@ extension ForceDirectedGraph: View {
             ) { _, newValue in
                 self.model.revive(
                     for: newValue,
-                    with: .init(self._forceDescriptors),
+                    forceDescriptor: self._forceDescriptors,
                     alpha: self.model.simulationContext.storage.kinetics.alpha
                 )
             }

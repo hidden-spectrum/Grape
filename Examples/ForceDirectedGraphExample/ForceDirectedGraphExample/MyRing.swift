@@ -15,7 +15,7 @@ struct MyRing: View {
     @State var graphStates = ForceDirectedGraphState()
     
     var body: some View {
-
+        
         ForceDirectedGraph(states: graphStates) {
             Series(0..<20) { i in
                 NodeMark(id: 3 * i + 0)
@@ -32,26 +32,29 @@ struct MyRing: View {
                     .symbolSize(radius:6.0)
                     .foregroundStyle(.yellow)
                     .stroke(.clear)
-
+                
                 LinkMark(from: 3 * i + 0, to: 3 * i + 1)
                 LinkMark(from: 3 * i + 1, to: 3 * i + 2)
                 
                 LinkMark(from: 3 * i + 0, to: 3 * ((i + 1) % 20) + 0)
                 LinkMark(from: 3 * i + 1, to: 3 * ((i + 1) % 20) + 1)
                 LinkMark(from: 3 * i + 2, to: 3 * ((i + 1) % 20) + 2)
-                    
+                
                 
             }
-            .stroke(.black, StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+            .stroke(
+                .black,
+                StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round)
+            )
             
         } force: {
-            ManyBodyForce(strength: -15)
-            LinkForce(
+            .manyBody(strength: -15)
+            .link(
                 originalLength: .constant(20.0),
-                stiffness: .weightedByDegree(k: { _, _ in 3.0})
+                stiffness: .weightedByDegree { _, _ in 3.0}
             )
-            CenterForce()
-            CollideForce()
+            .center()
+            .collide()
         }
         .graphOverlay { proxy in
             Rectangle().fill(.clear).contentShape(Rectangle())

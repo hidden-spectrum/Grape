@@ -66,11 +66,11 @@ struct MiserableGraph: View {
             }
             
         } force: {
-            ManyBodyForce(strength: -20)
-            CenterForce()
-            LinkForce(
+            .manyBody(strength: -20)
+            .center()
+            .link(
                 originalLength: .constant(35.0),
-                stiffness: .weightedByDegree(k: { _, _ in 1.0})
+                stiffness: .weightedByDegree { _, _ in 1.0}
             )
         }
         .ignoresSafeArea()

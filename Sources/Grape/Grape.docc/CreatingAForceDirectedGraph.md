@@ -83,9 +83,9 @@ struct MyGraph: View {
                 LinkMark(from: from, to: to)
             }
         } force: {
-            ManyBodyForce()
-            LinkForce()
-            CenterForce()
+            .manyBody()
+            .link()
+            .center()
         }
     }
 }
