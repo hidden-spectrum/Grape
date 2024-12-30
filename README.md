@@ -289,7 +289,7 @@ Grape uses simd to calculate position and velocity. Currently it takes **~0.005*
 For 3D simulation, it takes **~0.008** seconds for the same graph and same configs.
 
 > [!IMPORTANT]
-> Due to heavy use of generics (some are not specialized in Debug mode), the performance in Debug build is ~100x slower than Release build. Grape might ship a version with pre-inlined generics to address this problem.
+> Due to heavy use of generics (some are not specialized in Debug mode), the performance in Debug build is ~100x slower than Release build. 
 
 <br/>
 
