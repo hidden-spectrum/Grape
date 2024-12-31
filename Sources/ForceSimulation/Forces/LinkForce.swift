@@ -1,3 +1,5 @@
+import Darwin
+
 extension Kinetics {
 
     public enum LinkStiffness {
@@ -15,12 +17,12 @@ extension Kinetics {
             case .weightedByDegree(let k):
                 return link.map { l in
                     k(l, lookup)
-                        / Vector.Scalar(
+                        / (Vector.Scalar(
                             min(
                                 lookup.count[l.source, default: 0],
                                 lookup.count[l.target, default: 0]
                             )
-                        )
+                        )+1)
                 }
             }
         }
@@ -81,18 +83,14 @@ extension Kinetics {
                     assert(b != 0)
 
                     var vec =
-                        (positionBufferPointer[t] + velocityBufferPointer[t] 
-                        - positionBufferPointer[s] - velocityBufferPointer[s])
-                        // .jiggled()
+                        (positionBufferPointer[t] - positionBufferPointer[s])
                         .jiggled(by: &kinetics.randomGenerator)
 
                     var l = vec.length()
 
-                    l =
-                        (l - self.calculatedLength[i]) / l * kinetics.alpha
-                        * self.calculatedStiffness[i]
+                    l = (l - self.calculatedLength[i]) / l * self.calculatedStiffness[i] * kinetics.velocityDecay * kinetics.alpha 
 
-                    vec *= l
+                    vec *= l // * kinetics.velocityDecay
 
                     // same as d3
                     velocityBufferPointer[t] -= vec * b
@@ -100,7 +98,6 @@ extension Kinetics {
                 }
             }
         }
-
 
         @usableFromInline
         internal var links: [EdgeID<Int>]! = nil
@@ -144,7 +141,6 @@ extension Kinetics {
 
         }
 
-
         @inlinable
         public func dispose() {}
     }
@@ -172,7 +168,6 @@ public struct LinkLookup<NodeID: Hashable> {
     }
 
 }
-
 
 extension Kinetics.LinkStiffness: Equatable {
     @inlinable

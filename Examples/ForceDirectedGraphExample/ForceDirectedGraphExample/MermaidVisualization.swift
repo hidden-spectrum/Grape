@@ -100,7 +100,7 @@ struct MermaidVisualization: View {
             
         } force: {
             .manyBody()
-            .link(originalLength: 70.0)
+            .link(originalLength: 50.0)
             .center()
         } emittingNewNodesWithStates: { id in
             KineticState(position: getInitialPosition(id: id, r: 100))
