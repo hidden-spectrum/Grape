@@ -51,11 +51,11 @@ struct MyRing: View {
         } force: {
             .manyBody(strength: -15)
             .link(
-                originalLength: 20.0,
-                stiffness: .weightedByDegree { _, _ in 3.0}
+                originalLength: 30.0,
+                stiffness: .weightedByDegree { _, _ in 1.0 }
             )
             .center()
-            .collide()
+//            .collide()
         }
         .graphOverlay { proxy in
             Rectangle().fill(.clear).contentShape(Rectangle())
