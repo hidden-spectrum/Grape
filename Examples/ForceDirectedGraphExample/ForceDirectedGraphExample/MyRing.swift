@@ -26,19 +26,19 @@ struct MyRing: View {
                 NodeMark(id: 3 * i + 0)
                     .symbolSize(radius: 6.0)
                     .foregroundStyle(.green)
-                    .stroke(3*i+0 == draggingNodeID ? .black : .clear, Self.storkeStyle)
+                    .stroke(3*i+0 == draggingNodeID ? .secondary : .clear, Self.storkeStyle)
                     
                 NodeMark(id: 3 * i + 1)
                     .symbol(.pentagon)
                     .symbolSize(radius:10)
                     .foregroundStyle(.blue)
-                    .stroke(3*i+1 == draggingNodeID ? .black : .clear, Self.storkeStyle)
+                    .stroke(3*i+1 == draggingNodeID ? .secondary : .clear, Self.storkeStyle)
                 
                 NodeMark(id: 3 * i + 2)
                     .symbol(.circle)
                     .symbolSize(radius:6.0)
                     .foregroundStyle(.yellow)
-                    .stroke(3*i+2 == draggingNodeID ? .black : .clear, Self.storkeStyle)
+                    .stroke(3*i+2 == draggingNodeID ? .secondary : .clear, Self.storkeStyle)
                 
                 LinkMark(from: 3 * i + 0, to: 3 * i + 1)
                 LinkMark(from: 3 * i + 1, to: 3 * i + 2)
@@ -46,7 +46,7 @@ struct MyRing: View {
                 LinkMark(from: 3 * i + 1, to: 3 * ((i + 1) % 20) + 1)
                 LinkMark(from: 3 * i + 2, to: 3 * ((i + 1) % 20) + 2)
             }
-            .stroke(.black, Self.storkeStyle)
+            .stroke(.secondary, Self.storkeStyle)
             
         } force: {
             .manyBody(strength: -15)

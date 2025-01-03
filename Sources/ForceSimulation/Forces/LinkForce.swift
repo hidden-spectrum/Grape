@@ -22,7 +22,7 @@ extension Kinetics {
                                 lookup.count[l.source, default: 0],
                                 lookup.count[l.target, default: 0]
                             )
-                        )+1)
+                        ))
                 }
             }
         }
