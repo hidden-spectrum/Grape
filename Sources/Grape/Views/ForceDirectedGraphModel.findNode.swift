@@ -2,7 +2,21 @@ import ForceSimulation
 import SwiftUI
 import simd
 
+
 extension ForceDirectedGraphModel {
+
+    @inlinable 
+    internal func findNodeFromRichLabel(
+        at locationInSimulationCoordinate: SIMD2<Double>
+    ) -> GraphRenderingStates<NodeID>.StateID? {
+        for (symbolID, box) in rasterizedSymbols {
+            if box.contains(locationInSimulationCoordinate) {
+                return symbolID
+            }
+        }
+        return nil
+    }
+
     @inlinable
     internal func findNode(
         at locationInSimulationCoordinate: SIMD2<Double>

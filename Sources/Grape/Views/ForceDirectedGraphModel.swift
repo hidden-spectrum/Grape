@@ -6,7 +6,11 @@ import SwiftUI
 @MainActor
 public protocol _AnyGraphProxyProtocol {
     @inlinable
-    func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable?
+    func locateNode(
+        at locationInViewportCoordinate: CGPoint
+    ) -> AnyHashable?
+
+
 
     @inlinable
     func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?, minimumAlpha: Double)
@@ -30,6 +34,16 @@ public protocol _AnyGraphProxyProtocol {
 extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
     @inlinable
     public func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable? {
+
+        // Find from rich label first
+        if let nodeIDFromRichLabel = findNodeFromRichLabel(
+            at: finalTransform.invert(locationInViewportCoordinate.simd)
+        ) {
+            if case .node(let nodeID) = nodeIDFromRichLabel {
+                return AnyHashable(nodeID)
+            }
+        }
+
         if let nodeID = findNode(at: locationInViewportCoordinate) {
             return AnyHashable(nodeID)
         } else {
@@ -44,7 +58,7 @@ extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
         }
 
         simulationContext.storage.kinetics.alpha = max(
-            simulationContext.storage.kinetics.alpha, 
+            simulationContext.storage.kinetics.alpha,
             minimumAlpha
         )
 
@@ -127,6 +141,9 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
 
     // records the transform right before a magnification gesture starts
     public var lastTransformRecord: ViewportTransform? = nil
+
+    @usableFromInline
+    var rasterizedSymbols: [(GraphRenderingStates<NodeID>.StateID, CGRect)] = []
 
     @usableFromInline
     let velocityDecay: Double
@@ -502,6 +519,7 @@ extension ForceDirectedGraphModel {
             }
         }
         // return
+        var newRasterizedSymbols = [(GraphRenderingStates<NodeID>.StateID, CGRect)]()
         graphicsContext.transform = .identity.concatenating(CGAffineTransform(scaleX: 1, y: -1))
         graphicsContext.withCGContext { cgContext in
 
@@ -551,15 +569,18 @@ extension ForceDirectedGraphModel {
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
 
+                        let rect = CGRect(
+                            x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
+                            y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
+                            width: physicalWidth,
+                            height: physicalHeight
+                        )
                         cgContext.draw(
                             rasterizedSymbol,
-                            in: .init(
-                                x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
-                                y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
-                            )
+                            in: rect
                         )
+
+                        newRasterizedSymbols.append((symbolID, rect))
                     }
 
                 case .link(let fromID, let toID):
@@ -582,15 +603,18 @@ extension ForceDirectedGraphModel {
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
 
-                        cgContext.draw(
-                            rasterizedSymbol,
-                            in: .init(
+                        let rect = CGRect(
                                 x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
                                 y: -center.y - offset.y - textImageOffset.y,  // - physicalHeight
                                 width: physicalWidth,
                                 height: physicalHeight
                             )
+                        cgContext.draw(
+                            rasterizedSymbol,
+                            in: rect
                         )
+
+                        newRasterizedSymbols.append((symbolID, rect))
                     }
                 }
             }
@@ -633,15 +657,19 @@ extension ForceDirectedGraphModel {
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
 
-                        cgContext.draw(
-                            rasterizedSymbol,
-                            in: .init(
+                        let rect = CGRect(
                                 x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
                                 y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
                                 width: physicalWidth,
                                 height: physicalHeight
                             )
+
+                        cgContext.draw(
+                            rasterizedSymbol,
+                            in: rect
                         )
+
+                        newRasterizedSymbols.append((symbolID, rect))
                     }
 
                 case .link(let fromID, let toID):
@@ -664,20 +692,26 @@ extension ForceDirectedGraphModel {
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
 
+
+                        let rect = CGRect(
+                            x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
+                            y: -center.y - offset.y - textImageOffset.y,  // - physicalHeight
+                            width: physicalWidth,
+                            height: physicalHeight
+                        )
+
                         cgContext.draw(
                             rasterizedSymbol,
-                            in: .init(
-                                x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
-                                y: -center.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
-                            )
+                            in: rect
                         )
+
+                        newRasterizedSymbols.append((symbolID, rect))
                     }
                 }
             }
         }
 
+        rasterizedSymbols = newRasterizedSymbols
     }
 
     @inlinable
@@ -726,7 +760,9 @@ extension ForceDirectedGraphModel {
                 count: self.simulationContext.storage.kinetics.position.count
             )
         }
-        debugPrint("Graph state revived. Note this might cause expensive rerendering when combined with `richLabel` with unstable id.")
+        debugPrint(
+            "Graph state revived. Note this might cause expensive rerendering when combined with `richLabel` with unstable id."
+        )
     }
 
 }

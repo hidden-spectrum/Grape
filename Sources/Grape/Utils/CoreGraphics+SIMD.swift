@@ -48,4 +48,12 @@ extension SIMD2 where Scalar == Double {
     }
 }
 
+extension CGRect {
+    @inlinable
+    internal func contains(_ point: SIMD2<Double>) -> Bool {
+        return point.x >= origin.x && point.x <= origin.x + size.width
+            && point.y >= origin.y && point.y <= origin.y + size.height
+    }
+}
+
 //#endif
