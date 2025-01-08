@@ -2,6 +2,7 @@ import SwiftUI
 
 extension View {
     @inlinable
+    @available(tvOS, unavailable)
     public func withGraphTapGesture(
         _ proxy: GraphProxy,
         action: @escaping (AnyHashable) -> Void
