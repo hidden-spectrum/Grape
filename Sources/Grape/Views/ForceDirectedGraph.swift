@@ -69,7 +69,7 @@ where NodeID == Content.NodeID {
     ///     the simulation updates, and the actual frame rate may be different.
     ///   - graph: The graph content. The `ForceDirectedGraph` will observe the changes of the graph content
     ///     and try to update the elements with minimal changes across the parameter updates.
-    ///   - force: The forces to be applied to the graph.
+    ///   - buildForce: The forces to be applied to the graph.
     ///   - emittingNewNodesWithStates: Tells the simulation where to place the new nodes and provide their
     ///     initial kinetic states. This is only applied on the new nodes that is not seen before when the
     ///     graph is created (or updated).

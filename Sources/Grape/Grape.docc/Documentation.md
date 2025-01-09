@@ -62,8 +62,8 @@ Grape supports localization features. You can localize the labels in the graph v
 * ``ManyBodyForce``
 * ``PositionForce``
 * ``RadialForce``
-* ``SealedForceDescriptor2D``
-* ``SealForceDescriptor2DBuilder``
+* ``SealedForceDescriptor``
+* ``SealedForceDescriptorBuilder``
 
 ### Decorating marks
 

@@ -12,7 +12,7 @@ public struct GraphProxy {
     }
 
     @inlinable
-    public init() {
+    init() {
         self.storage = nil
     }
 
