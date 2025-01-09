@@ -19,11 +19,15 @@ public struct GraphProxy {
 }
 
 extension GraphProxy: _AnyGraphProxyProtocol {
+    /// Find the node ID at the given location in the viewport coordinate, with specific type.
+    /// Returns `nil` if no node is found or the node is not of the specified type.
     @inlinable
     public func node<ID>(of type: ID.Type, at locationInViewportCoordinate: CGPoint) -> ID? where ID : Hashable {
         storage?.node(of: type, at: locationInViewportCoordinate)
     }
 
+    /// Find the type erased node ID at the given location in the viewport coordinate.
+    /// Returns `nil` if no node is found.
     @inlinable
     public func node(at locationInViewportCoordinate: CGPoint) -> AnyHashable? {
         storage?.node(at: locationInViewportCoordinate)
