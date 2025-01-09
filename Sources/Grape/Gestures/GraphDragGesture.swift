@@ -79,9 +79,8 @@ struct GraphDragModifier: ViewModifier {
         value: DragGesture.Value
     ) {
         if dragState == nil {
-            if let nodeID = graphProxy.locateNode(at: value.startLocation) {
+            if let nodeID = graphProxy.node(at: value.startLocation) {
                 dragState = .node(nodeID)
-                
                 graphProxy.setNodeFixation(nodeID: nodeID, fixation: value.startLocation)
             } else {
                 dragState = .background(start: value.location.simd)
