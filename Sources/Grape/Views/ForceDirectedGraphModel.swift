@@ -6,14 +6,15 @@ import SwiftUI
 @MainActor
 public protocol _AnyGraphProxyProtocol {
     @inlinable
-    func locateNode(
+    func node(
         at locationInViewportCoordinate: CGPoint
     ) -> AnyHashable?
 
-
+    @inlinable
+    func node<ID: Hashable>(of type: ID.Type, at locationInViewportCoordinate: CGPoint) -> ID?
 
     @inlinable
-    func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?, minimumAlpha: Double)
+    func setNodeFixation<ID: Hashable>(nodeID: ID, fixation: CGPoint?, minimumAlpha: Double)
 
     @inlinable
     var kineticAlpha: Double { get nonmutating set }
@@ -32,8 +33,18 @@ public protocol _AnyGraphProxyProtocol {
 }
 
 extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
+
     @inlinable
-    public func locateNode(at locationInViewportCoordinate: CGPoint) -> AnyHashable? {
+    public func node<ID>(of type: ID.Type, at locationInViewportCoordinate: CGPoint) -> ID? where ID: Hashable {
+        if type.self == NodeID.self {
+            return findNode(at: locationInViewportCoordinate) as! ID?
+        } else {
+            return nil
+        }
+    }
+
+    @inlinable
+    public func node(at locationInViewportCoordinate: CGPoint) -> AnyHashable? {
 
         // Find from rich label first
         if let nodeIDFromRichLabel = findNodeFromRichLabel(
@@ -52,7 +63,7 @@ extension ForceDirectedGraphModel: _AnyGraphProxyProtocol {
     }
 
     @inlinable
-    public func setNodeFixation(nodeID: some Hashable, fixation: CGPoint?, minimumAlpha: Double) {
+    public func setNodeFixation<ID>(nodeID: ID, fixation: CGPoint?, minimumAlpha: Double) {
         guard let nodeID = nodeID as? NodeID else {
             return
         }
@@ -201,7 +212,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     let ticksPerSecond: Double
 
     @usableFromInline
-    //    @MainActor
+    @MainActor
     var scheduledTimer: Timer? = nil
 
     @usableFromInline
@@ -329,6 +340,7 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     @inlinable
     deinit {
         print("deinit")
+
         let _ = MainActor.assumeIsolated {
             scheduledTimer?.invalidate()
         }
@@ -604,11 +616,11 @@ extension ForceDirectedGraphModel {
                             width: physicalWidth, height: physicalHeight)
 
                         let rect = CGRect(
-                                x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
-                                y: -center.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
-                            )
+                            x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
+                            y: -center.y - offset.y - textImageOffset.y,  // - physicalHeight
+                            width: physicalWidth,
+                            height: physicalHeight
+                        )
                         cgContext.draw(
                             rasterizedSymbol,
                             in: rect
@@ -658,11 +670,11 @@ extension ForceDirectedGraphModel {
                             width: physicalWidth, height: physicalHeight)
 
                         let rect = CGRect(
-                                x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
-                                y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
-                                width: physicalWidth,
-                                height: physicalHeight
-                            )
+                            x: pos.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
+                            y: -pos.y - offset.y - textImageOffset.y,  // - physicalHeight
+                            width: physicalWidth,
+                            height: physicalHeight
+                        )
 
                         cgContext.draw(
                             rasterizedSymbol,
@@ -691,7 +703,6 @@ extension ForceDirectedGraphModel {
 
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
-
 
                         let rect = CGRect(
                             x: center.x + offset.x + textImageOffset.x,  // - physicalWidth / 2,
