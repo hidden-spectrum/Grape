@@ -57,7 +57,7 @@ struct Lattice: View {
         }
         .graphOverlay(content: { proxy in
             Rectangle().fill(.clear).contentShape(Rectangle())
-                .withGraphDragGesture(proxy)
+                .withGraphDragGesture(proxy, of: Int.self)
         })
         .toolbar {
             GraphStateToggle(graphStates: graphStates)

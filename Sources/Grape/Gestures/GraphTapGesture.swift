@@ -3,12 +3,13 @@ import SwiftUI
 extension View {
     @inlinable
     @available(tvOS, unavailable)
-    public func withGraphTapGesture(
+    public func withGraphTapGesture<NodeID: Hashable>(
         _ proxy: GraphProxy,
-        action: @escaping (AnyHashable) -> Void
+        of type: NodeID.Type,
+        action: @escaping (NodeID) -> Void
     ) -> some View {
         self.onTapGesture { value in
-            if let nodeID = proxy.node(at: .init(x: value.x, y: value.y)) {
+            if let nodeID = proxy.node(of: type, at: value) {
                 action(nodeID)
             }
         }

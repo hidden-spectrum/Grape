@@ -59,7 +59,7 @@ struct MyRing: View {
         }
         .graphOverlay { proxy in
             Rectangle().fill(.clear).contentShape(Rectangle())
-                .withGraphDragGesture(proxy, action: describe)
+                .withGraphDragGesture(proxy, of: Int.self, action: describe)
                 .withGraphMagnifyGesture(proxy)
         }
         .toolbar {
@@ -67,10 +67,9 @@ struct MyRing: View {
         }
     }
     
-    func describe(_ state: GraphDragState?) {
+    func describe(_ state: GraphDragState<Int>?) {
         switch state {
-        case .node(let anyHashable):
-            let id = anyHashable as! Int
+        case .node(let id):
             if draggingNodeID != id {
                 draggingNodeID = id
                 print("Dragging \(id)")

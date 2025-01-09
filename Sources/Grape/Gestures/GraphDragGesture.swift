@@ -1,15 +1,15 @@
 import ForceSimulation
 import SwiftUI
 
-public enum GraphDragState {
-    case node(AnyHashable)
-    case background(start: SIMD2<Double>)
+public enum GraphDragState<NodeID: Hashable> {
+    case node(NodeID)
+    case background(SIMD2<Double>)
 }
 
 #if !os(tvOS)
 
 @usableFromInline
-struct GraphDragModifier: ViewModifier {
+struct GraphDragModifier<NodeID: Hashable>: ViewModifier {
 
     @inlinable
     public var dragGesture: some Gesture {
@@ -28,18 +28,18 @@ struct GraphDragModifier: ViewModifier {
 
     @inlinable
     @State
-    public var dragState: GraphDragState?
+    public var dragState: GraphDragState<NodeID>?
 
     @usableFromInline
     let graphProxy: GraphProxy
 
     @usableFromInline
-    let action: ((GraphDragState?) -> Void)?
+    let action: ((GraphDragState<NodeID>?) -> Void)?
 
     @inlinable
     init(
         graphProxy: GraphProxy,
-        action: ((GraphDragState?) -> Void)? = nil
+        action: ((GraphDragState<NodeID>?) -> Void)? = nil
     ) {
         self.graphProxy = graphProxy
         self.action = action
@@ -62,7 +62,7 @@ struct GraphDragModifier: ViewModifier {
             case .background(let start):
                 let delta = value.location.simd - start
                 graphProxy.modelTransform.translate += delta
-                dragState = .background(start: value.location.simd)
+                dragState = .background(value.location.simd)
             case .none:
                 break
             }
@@ -79,11 +79,11 @@ struct GraphDragModifier: ViewModifier {
         value: DragGesture.Value
     ) {
         if dragState == nil {
-            if let nodeID = graphProxy.node(at: value.startLocation) {
+            if let nodeID = graphProxy.node(of: NodeID.self, at: value.startLocation) {
                 dragState = .node(nodeID)
                 graphProxy.setNodeFixation(nodeID: nodeID, fixation: value.startLocation)
             } else {
-                dragState = .background(start: value.location.simd)
+                dragState = .background(value.location.simd)
             }
         } else {
             switch dragState {
@@ -92,7 +92,7 @@ struct GraphDragModifier: ViewModifier {
             case .background(let start):
                 let delta = value.location.simd - start
                 graphProxy.modelTransform.translate += delta
-                dragState = .background(start: value.location.simd)
+                dragState = .background(value.location.simd)
             case .none:
                 break
             }
@@ -105,10 +105,17 @@ struct GraphDragModifier: ViewModifier {
 }
 
 extension View {
+
+    /// Attach a drag gesture to an overlay or a background view created with ``SwiftUICore/View/graphOverlay(alignment:content:)``.
+    /// - Parameters:
+    ///  - proxy: The graph proxy that provides the graph context.
+    ///  - type: The type of the node ID. The drag gesture will look for the node ID of this type.
+    ///  - action: The action to perform when the drag gesture changes.
     @inlinable
-    public func withGraphDragGesture(
+    public func withGraphDragGesture<NodeID>(
         _ proxy: GraphProxy,
-        action: ((GraphDragState?) -> Void)? = nil
+        of type: NodeID.Type,
+        action: ((GraphDragState<NodeID>?) -> Void)? = nil
     ) -> some View {
         self.modifier(GraphDragModifier(graphProxy: proxy, action: action))
     }
