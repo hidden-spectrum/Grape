@@ -287,6 +287,18 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
 
     @inlinable
     func trackStateMixin() {
+        Task { @MainActor [self] in
+            switch stateMixinRef.ticksOnAppear {
+            case .iteration(let count):
+                simulationContext.storage.tick(ticks: .iteration(count))
+            case .untilReachingAlpha(let alpha):
+                simulationContext.storage.tick(ticks: .untilReachingAlpha(alpha))
+            }
+            withMutation(keyPath: \.currentFrame) {
+                currentFrame += 1
+            }
+        }
+
         if stateMixinRef.isRunning {
             start()
         } else {

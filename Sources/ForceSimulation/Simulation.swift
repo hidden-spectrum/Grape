@@ -1,7 +1,23 @@
+@usableFromInline
+package enum Ticks<Scalar: Sendable & FloatingPoint>: Sendable {
+    case untilReachingAlpha(Scalar?)
+    case iteration(Int)
+
+    @inlinable
+    public static var zero: Self {
+        .iteration(0)
+    }
+
+    @inlinable
+    public static var untilStable: Self {
+        .untilReachingAlpha(nil)
+    }
+}
+
 /// An any-dimensional force simulation.
 /// The points are placed in a space where you use a SIMD data structure
 /// to describe their coordinates.
-public final class Simulation<Vector, ForceField>
+public final class Simulation<Vector, ForceField>: @unchecked Sendable
 where Vector: SimulatableVector & L2NormCalculatable, ForceField: ForceProtocol<Vector> {
 
     @usableFromInline
@@ -89,6 +105,7 @@ where Vector: SimulatableVector & L2NormCalculatable, ForceField: ForceProtocol<
 
     /// Run a number of iterations of ticks.
     @inlinable
+    @inline(__always)
     public func tick(iterations: UInt = 1) {
         // print(self.kinetics.alpha, self.kinetics.alphaMin)
         guard self.kinetics.alpha >= self.kinetics.alphaMin else { return }
@@ -99,12 +116,28 @@ where Vector: SimulatableVector & L2NormCalculatable, ForceField: ForceProtocol<
         }
     }
 
+    /// Run a number of iterations of ticks.
+    @inlinable
+    package func tick(ticks: Ticks<Vector.Scalar>) {
+        switch ticks {
+        case .iteration(let count):
+            self.tick(iterations: UInt(count))
+        case .untilReachingAlpha(let alpha):
+            let alpha = alpha ?? self.kinetics.alphaMin
+            while self.kinetics.alpha >= alpha {
+                self.kinetics.updateAlpha()
+                self.forceField.apply(to: &self.kinetics)
+                self.kinetics.updatePositions()
+            }
+        }
+    }
+
+    @inlinable
     deinit {
         self.forceField.dispose()
     }
 
 }
-
 
 public typealias Simulation2D<ForceField> = Simulation<SIMD2<Double>, ForceField>
 where ForceField: ForceProtocol<SIMD2<Double>>

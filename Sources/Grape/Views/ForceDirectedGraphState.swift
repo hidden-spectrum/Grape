@@ -16,7 +16,25 @@ import Observation
 //     }
 // }
 
+public enum Ticks: Sendable {
+    case untilReachingAlpha(Double?)
+    case iteration(Int)
+    
+    @inlinable
+    public static var zero: Self {
+        .iteration(0)
+    }
+    
+    @inlinable
+    public static var untilStable: Self {
+        .untilReachingAlpha(nil)
+    }
+}
+
 public class ForceDirectedGraphState: Observation.Observable {
+
+    @usableFromInline
+    internal var ticksOnAppear: Ticks
 
     @usableFromInline
     internal var _$modelTransform: ViewportTransform
@@ -53,11 +71,13 @@ public class ForceDirectedGraphState: Observation.Observable {
     @inlinable
     public init(
         initialIsRunning: Bool = true,
-        initialModelTransform: ViewportTransform = .identity
+        initialModelTransform: ViewportTransform = .identity,
+        ticksOnAppear: Ticks = .iteration(0)
     ) {
         self._reg = Observation.ObservationRegistrar()
         self._$modelTransform = initialModelTransform
         self._$isRunning = initialIsRunning
+        self.ticksOnAppear = ticksOnAppear
     }
 
     // MARK: - Observation

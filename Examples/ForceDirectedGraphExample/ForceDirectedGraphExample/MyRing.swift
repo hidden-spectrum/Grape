@@ -12,7 +12,9 @@ import ForceSimulation
 
 struct MyRing: View {
     
-    @State var graphStates = ForceDirectedGraphState()
+    @State var graphStates = ForceDirectedGraphState(
+        ticksOnAppear: .untilStable
+    )
     
     @State var draggingNodeID: Int? = nil
     
