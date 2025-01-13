@@ -163,7 +163,7 @@ final class GraphContentBuilderTests: XCTestCase {
         ]
 
         let gc = buildGraph {
-            ForEach(arr) { i in
+            Series(arr) { i in
                 NodeMark(id: i.id)
                     // .opacity(0.2)
             }
