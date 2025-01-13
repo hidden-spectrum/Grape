@@ -6,7 +6,7 @@ import simd
 extension ForceDirectedGraphModel {
 
     @inlinable 
-    internal func findNodeFromRichLabel(
+    internal func findNodeFromViewAnnotation(
         at locationInSimulationCoordinate: SIMD2<Double>
     ) -> GraphRenderingStates<NodeID>.StateID? {
         for (symbolID, box) in rasterizedSymbols {

@@ -3,7 +3,7 @@ import SwiftUI
 
 extension GraphContentEffect {
     @usableFromInline
-    internal struct Label {
+    internal struct TextAnnotation {
 
         @usableFromInline
         let text: Text?
@@ -27,7 +27,7 @@ extension GraphContentEffect {
     }
 
     @usableFromInline
-    internal struct RichLabel {
+    internal struct ViewAnnotation {
 
         @usableFromInline
         let view: AnyView
@@ -57,7 +57,7 @@ extension GraphContentEffect {
 
 }
 
-extension GraphContentEffect.Label: GraphContentModifier {
+extension GraphContentEffect.TextAnnotation: GraphContentModifier {
     @inlinable
     public func _into<NodeID>(
         _ context: inout _GraphRenderingContext<NodeID>
@@ -89,7 +89,7 @@ extension GraphContentEffect.Label: GraphContentModifier {
     }
 }
 
-extension GraphContentEffect.RichLabel: GraphContentModifier {
+extension GraphContentEffect.ViewAnnotation: GraphContentModifier {
     @inlinable
     public func _into<NodeID>(
         _ context: inout _GraphRenderingContext<NodeID>

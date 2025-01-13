@@ -52,10 +52,10 @@ struct MiserableGraph: View {
                     .symbolSize(radius: 8.0)
                     .foregroundStyle(colors[node.group % colors.count])
                     .stroke()
-                    .richLabel(node.id, offset: .zero) {
-                        if (graphData.links.filter({ l in
-                            return l.source == node.id || l.target == node.id}
-                                                  ).count > 12) {
+                    .annotation(node.id, offset: .zero) {
+                        let connections = graphData.links.count { $0.source == node.id || $0.target == node.id }
+                        
+                        if connections > 12 {
                             self.getLabel(node.id)
                         }
                     }
@@ -73,6 +73,10 @@ struct MiserableGraph: View {
                 stiffness: .weightedByDegree { _, _ in 1.0}
             )
         }
+        .graphOverlay(content: { proxy in
+            Rectangle().fill(.clear).contentShape(Rectangle())
+                .withGraphDragGesture(proxy, of: String.self)
+        })
         .ignoresSafeArea()
         .toolbar {
             GraphStateToggle(graphStates: stateMixin)

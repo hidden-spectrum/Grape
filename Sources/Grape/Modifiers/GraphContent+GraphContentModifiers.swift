@@ -50,82 +50,52 @@ extension GraphContent {
     }
 
     @inlinable
-    @available(*, deprecated, message: "use foregroundStyle(_:)")
-    public func fill(_ shading: GraphicsContext.Shading) -> some GraphContent<NodeID> {
-        return ModifiedGraphContent(self, GraphContentEffect.Shading(shading))
-    }
-
-    @inlinable
-    public func label(
+    public func annotation(
         _ text: Text?, alignment: Alignment = .bottom, offset: CGVector = .zero
     ) -> some GraphContent<NodeID> {
-
         return ModifiedGraphContent(
-            self, GraphContentEffect.Label(text, alignment: alignment, offset: offset))
+            self, GraphContentEffect.TextAnnotation(text, alignment: alignment, offset: offset))
     }
 
     @inlinable
-    public func label(
+    public func annotation(
         _ text: Text?, alignment: Alignment = .bottom, offset: SIMD2<Double> = .zero
     ) -> some GraphContent<NodeID> {
-
-        return label(text, alignment: alignment, offset: offset.cgVector)
+        return annotation(text, alignment: alignment, offset: offset.cgVector)
     }
 
     @inlinable
-    public func label(
+    public func annotation(
         _ string: String?, alignment: Alignment = .bottom, offset: CGVector = .zero
     ) -> some GraphContent<NodeID> {
         return ModifiedGraphContent(
-            self, GraphContentEffect.Label(nil, alignment: alignment, offset: offset))
+            self, GraphContentEffect.TextAnnotation(nil, alignment: alignment, offset: offset))
     }
 
     @inlinable
-    public func label(
-        _ string: String?, alignment: Alignment = .bottom, offset: SIMD2<Double> = .zero
-    ) -> some GraphContent<NodeID> {
-        return label(string, alignment: alignment, offset: offset.cgVector)
-    }
-
-    @inlinable
-    public func label(
-        _ alignment: Alignment = .bottom, offset: CGVector = .zero,
+    public func annotation(
+        alignment: Alignment = .bottom, 
+        offset: CGVector = .zero,
         @ViewBuilder _ content: () -> Text?
     ) -> some GraphContent<NodeID> {
-
         return ModifiedGraphContent(
-            self, GraphContentEffect.Label(content(), alignment: alignment, offset: offset))
+            self, GraphContentEffect.TextAnnotation(content(), alignment: alignment, offset: offset))
     }
 
-    @inlinable
-    public func label(
-        alignment: Alignment = .bottom, offset: SIMD2<Double> = .zero,
-        @ViewBuilder _ content: () -> Text?
-    ) -> some GraphContent<NodeID> {
-        return label(alignment, offset: offset.cgVector, content)
-    }
 
     @inlinable
-    public func richLabel(
+    @_disfavoredOverload
+    public func annotation(
         _ tag: String,
-        _ alignment: Alignment = .bottom,
+        alignment: Alignment = .bottom,
         offset: CGVector = .zero,
         @ViewBuilder _ content: () -> some View
     ) -> some GraphContent<NodeID> {
         return ModifiedGraphContent(
-            self, GraphContentEffect.RichLabel(tag, content(), alignment: alignment, offset: offset)
+            self, GraphContentEffect.ViewAnnotation(tag, content(), alignment: alignment, offset: offset)
         )
     }
 
-    @inlinable
-    public func richLabel(
-        _ tag: String,
-        alignment: Alignment = .bottom,
-        offset: SIMD2<Double> = .zero,
-        @ViewBuilder _ content: () -> some View
-    ) -> some GraphContent<NodeID> {
-        return richLabel(tag, alignment, offset: offset.cgVector, content)
-    }
 
     /// Sets the stroke style for this graph content.
     ///
@@ -134,6 +104,7 @@ extension GraphContent {
     /// - When a `.clip` color is applied to link marks, the stroke will not be drawn.
     /// - When a `nil` stroke style is applied to node marks, the stroke style will be the same as the default stroke style.
     @inlinable
+    @_disfavoredOverload
     public func stroke(
         _ color: StrokeColor = .clip,
         _ strokeStyle: StrokeStyle? = nil

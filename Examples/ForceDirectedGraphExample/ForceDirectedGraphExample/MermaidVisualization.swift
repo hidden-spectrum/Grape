@@ -88,7 +88,7 @@ struct MermaidVisualization: View {
                     .symbol(.circle)
                     .symbolSize(radius: 16)
                     .foregroundStyle(Color(white: 1.0, opacity: 0.0))
-                    .richLabel(node, alignment: .center, offset: .zero) {
+                    .annotation(node, alignment: .center, offset: .zero) {
                         getLabel(node)
                     }
             }
