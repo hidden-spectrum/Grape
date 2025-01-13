@@ -31,29 +31,29 @@ extension ForceDirectedGraph: View {
     
     // #if DEBUG
     
-    @ViewBuilder
-    @inlinable
-    var debugView: some View {
-        VStack(alignment: .leading, spacing: 8.0) {
-            Text("Elapsed Time: \(model.currentFrame)")
-            Divider()
-            Text(self.model.changeMessage)
-            Divider()
-            Button {
-                // self.clickCount += 1
-            } label: {
-                Text("Click")
-            }
+    // @ViewBuilder
+    // @inlinable
+    // var debugView: some View {
+    //     VStack(alignment: .leading, spacing: 8.0) {
+    //         Text("Elapsed Time: \(model.currentFrame)")
+    //         Divider()
+    //         Text(self.model.changeMessage)
+    //         Divider()
+    //         Button {
+    //             // self.clickCount += 1
+    //         } label: {
+    //             Text("Click")
+    //         }
             
-            ScrollView {
-                ForEach(self.model.graphRenderingContext.nodes, id: \.id) { node in
-                    Text("\(node.debugDescription)")
-                }
-            }.frame(maxWidth: .infinity)
+    //         ScrollView {
+    //             ForEach(self.model.graphRenderingContext.nodes, id: \.id) { node in
+    //                 Text("\(node.debugDescription)")
+    //             }
+    //         }.frame(maxWidth: .infinity)
             
-        }
-        .frame(width: 200.0)
-    }
+    //     }
+    //     .frame(width: 200.0)
+    // }
     
     // #endif
     

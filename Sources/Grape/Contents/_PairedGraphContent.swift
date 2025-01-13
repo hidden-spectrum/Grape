@@ -19,4 +19,10 @@ where C1: GraphContent, C2: GraphContent, NodeID: Hashable, C1.NodeID == NodeID,
         first._attachToGraphRenderingContext(&context)
         second._attachToGraphRenderingContext(&context)
     }
+
+
+    @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
 }

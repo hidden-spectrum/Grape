@@ -15,6 +15,11 @@ where Data: RandomAccessCollection, Content: GraphContent<NodeID>, NodeID: Hasha
         self.data = data
         self.content = graphContent
     }
+
+    @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
 }
 
 extension Series: GraphContent {

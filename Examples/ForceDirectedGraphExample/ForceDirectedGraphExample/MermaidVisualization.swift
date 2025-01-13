@@ -84,13 +84,9 @@ struct MermaidVisualization: View {
         let parsedGraph = model.parsedGraph
         ForceDirectedGraph {
             Series(parsedGraph.0) { node in
-                NodeMark(id: node)
-                    .symbol(.circle)
-                    .symbolSize(radius: 16)
-                    .foregroundStyle(Color(white: 1.0, opacity: 0.0))
-                    .annotation(node, alignment: .center, offset: .zero) {
-                        getLabel(node)
-                    }
+                AnnotationNodeMark(id: node, radius: 16) {
+                    getLabel(node)
+                }
             }
             Series(parsedGraph.1) { link in
                 LinkMark(from: link.0, to: link.1)
@@ -115,11 +111,11 @@ struct MermaidVisualization: View {
                 }
         })
         .ignoresSafeArea()
-        #if !os(visionOS)
+#if !os(visionOS)
         .inspector(isPresented: .constant(true)) {
             MermaidInspector(model: model)
         }
-        #endif
+#endif
     }
 }
 
@@ -180,7 +176,7 @@ let mermaidLinkRegex = Regex {
         "<-"
         "→"
     }
-
+    
     OneOrMore(.whitespace)
     singleNodeRegex
 }

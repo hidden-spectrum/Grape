@@ -49,4 +49,9 @@ extension ModifiedGraphContent: GraphContent {
         content._attachToGraphRenderingContext(&context)
         modifier._exit(&context)
     }
+
+        @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
 }

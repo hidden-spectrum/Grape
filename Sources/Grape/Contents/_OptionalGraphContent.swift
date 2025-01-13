@@ -23,4 +23,9 @@ where C: GraphContent {
             content._attachToGraphRenderingContext(&context)
         }
     }
+
+        @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
 }

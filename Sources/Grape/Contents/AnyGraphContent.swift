@@ -10,6 +10,11 @@ public struct AnyGraphContent<NodeID: Hashable>: GraphContent {
     }
 
     @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
+
+    @inlinable
     public func _attachToGraphRenderingContext(_ context: inout _GraphRenderingContext<NodeID>) {
         storage._attachToGraphRenderingContext(&context)
     }

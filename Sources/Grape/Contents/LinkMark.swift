@@ -3,6 +3,10 @@ import SwiftUI
 
 public struct LinkMark<NodeID: Hashable>: GraphContent & Identifiable {
 
+    @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
     // public enum LabelDisplayStrategy {
     //     case auto
     //     case specified(Bool)

@@ -8,4 +8,9 @@ struct _EmptyGraphContent<NodeID: Hashable>: GraphContent {
     public func _attachToGraphRenderingContext(_ context: inout _GraphRenderingContext<NodeID>) {
         
     }
+
+        @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
 }

@@ -18,6 +18,11 @@ where C1: GraphContent, C2: GraphContent, C1.NodeID == C2.NodeID {
         self.storage = storage
     }
 
+        @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
+
     @inlinable
     public func _attachToGraphRenderingContext(_ context: inout _GraphRenderingContext<NodeID>) {
         switch storage {

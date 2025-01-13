@@ -1,7 +1,5 @@
-public protocol GraphComponent<NodeID>: GraphContent {
+public protocol GraphComponent<NodeID>: GraphContent where Body: GraphContent<NodeID> {
 
-    associatedtype Body: GraphContent<NodeID>
-    
     @inlinable
     @GraphContentBuilder<Body.NodeID>
     var body: Body { get }

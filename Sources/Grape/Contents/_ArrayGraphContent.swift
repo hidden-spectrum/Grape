@@ -14,6 +14,11 @@ where C: GraphContent {
     }
 
     @inlinable
+    public var body: _IdentifiableNever<NodeID> {
+        fatalError()
+    }
+    
+    @inlinable
     public func _attachToGraphRenderingContext(_ context: inout _GraphRenderingContext<NodeID>) {
         for content in storage {
             content._attachToGraphRenderingContext(&context)
