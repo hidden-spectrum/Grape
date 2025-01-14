@@ -179,8 +179,7 @@ final class GraphContentBuilderTests: XCTestCase {
 
     }
 
-    struct MyGraphComponent: GraphComponent {
-        typealias NodeID = Int
+    struct MyGraphComponent: GraphContent {
         var body: some GraphContent<Int> {
             NodeMark(id: 0)
                 // .opacity(0.6)

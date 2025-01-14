@@ -9,6 +9,7 @@ public protocol GraphContent<NodeID> {
     func _attachToGraphRenderingContext(_ context: inout _GraphRenderingContext<NodeID>)
 
     @inlinable
+    @GraphContentBuilder<NodeID>
     var body: Body { get }
 }
 

@@ -24,8 +24,9 @@ where C: GraphContent {
         }
     }
 
-        @inlinable
+
+    @inlinable
     public var body: _IdentifiableNever<NodeID> {
-        fatalError()
+        _IdentifiableNever<_>()
     }
 }

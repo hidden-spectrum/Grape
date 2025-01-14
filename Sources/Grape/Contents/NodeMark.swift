@@ -15,9 +15,9 @@ public struct NodeMark<NodeID: Hashable>: GraphContent, Identifiable, Equatable 
 
     @inlinable
     public var body: _IdentifiableNever<NodeID> {
-        fatalError()
+        _IdentifiableNever<_>()
     }
-
+    
     @inlinable
     public func _attachToGraphRenderingContext(_ context: inout _GraphRenderingContext<NodeID>) {
         context.nodeOperations.append(

@@ -50,16 +50,31 @@ final class ContentBuilderTests: XCTestCase {
     }
 
     func testForEach() {
-        let _ = [
+        let arr = [
             ID(id: 0),
             ID(id: 1),
             ID(id: 2),
         ]
 
-        // let _ = buildGraph {
-        //     ForEach(data: arr) { i in
-        //         NodeMark(id: i.id)
-        //     }
-        // }
+        let _ = buildGraph {
+            Series(arr) { i in
+                NodeMark(id: i.id)
+            }
+        }
+    }
+
+    func testComposing() {
+        struct MyGraphContent: GraphContent {
+            var body: some GraphContent<Int> {
+                NodeMark(id: 1)
+                AnnotationNodeMark(id: 3, radius: 4.0) {
+                    EmptyView()
+                }
+            }
+        }
+
+        let _ = buildGraph {
+            MyGraphContent()
+        }
     }
 }

@@ -50,8 +50,9 @@ extension ModifiedGraphContent: GraphContent {
         modifier._exit(&context)
     }
 
-        @inlinable
+
+    @inlinable
     public var body: _IdentifiableNever<NodeID> {
-        fatalError()
+        _IdentifiableNever<_>()
     }
 }

@@ -5,8 +5,9 @@ public struct LinkMark<NodeID: Hashable>: GraphContent & Identifiable {
 
     @inlinable
     public var body: _IdentifiableNever<NodeID> {
-        fatalError()
+        _IdentifiableNever<_>()
     }
+
     // public enum LabelDisplayStrategy {
     //     case auto
     //     case specified(Bool)

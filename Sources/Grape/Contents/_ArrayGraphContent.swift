@@ -13,9 +13,10 @@ where C: GraphContent {
         self.storage = storage
     }
 
+
     @inlinable
     public var body: _IdentifiableNever<NodeID> {
-        fatalError()
+        _IdentifiableNever<_>()
     }
     
     @inlinable

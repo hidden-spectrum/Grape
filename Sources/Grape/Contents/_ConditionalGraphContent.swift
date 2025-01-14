@@ -18,9 +18,10 @@ where C1: GraphContent, C2: GraphContent, C1.NodeID == C2.NodeID {
         self.storage = storage
     }
 
-        @inlinable
+
+    @inlinable
     public var body: _IdentifiableNever<NodeID> {
-        fatalError()
+        _IdentifiableNever<_>()
     }
 
     @inlinable

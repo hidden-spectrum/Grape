@@ -21,8 +21,9 @@ where C1: GraphContent, C2: GraphContent, NodeID: Hashable, C1.NodeID == NodeID,
     }
 
 
+
     @inlinable
     public var body: _IdentifiableNever<NodeID> {
-        fatalError()
+        _IdentifiableNever<_>()
     }
 }
