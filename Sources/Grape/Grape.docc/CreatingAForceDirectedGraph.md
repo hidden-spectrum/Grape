@@ -124,10 +124,10 @@ struct MyGraph: View {
 Grape provides a set of interactions and events to help you respond to user interactions, including dragging, zooming, and tapping. They are mostly supported by default, and you can install your callbacks to respond to them. 
 
 
-For detailed usages, please refer to [MermaidVisualization.swift](https://github.com/li3zhen1/Grape/blob/main/Examples/ForceDirectedGraphExample/ForceDirectedGraphExample/MermaidVisualization.swift).
+For detailed usages, please refer to [MermaidVisualization.swift](https://github.com/swiftgraphs/Grape/blob/main/Examples/ForceDirectedGraphExample/ForceDirectedGraphExample/MermaidVisualization.swift).
 
 
-@Video(source: "https://github.com/li3zhen1/Grape/assets/45376537/80d933c1-8b5b-4b1a-9062-9628577bd2e0", alt: "A screen record of mermaid")
+@Video(source: "https://github.com/swiftgraphs/Grape/assets/45376537/80d933c1-8b5b-4b1a-9062-9628577bd2e0", alt: "A screen record of mermaid")
 
 
 // TODO: Add examples

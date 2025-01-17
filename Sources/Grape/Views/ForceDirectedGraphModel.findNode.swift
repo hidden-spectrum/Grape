@@ -33,7 +33,7 @@ extension ForceDirectedGraphModel {
             else { continue }
             let iPos = simulationContext.storage.kinetics.position[i]
             
-            /// https://github.com/li3zhen1/Grape/pull/62#issue-2753932460
+            /// https://github.com/swiftgraphs/Grape/pull/62#issue-2753932460
             ///
             /// ```swift
             /// let actualRadius = pow((iRadius2 * 0.5), 0.5) * 0.5
