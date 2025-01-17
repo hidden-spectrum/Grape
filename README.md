@@ -143,7 +143,7 @@ Grape ships 2 modules:
 ### The `Grape` module
 
 
-For detailed usage, please refer to [documentation](https://li3zhen1.github.io/Grape/Grape/documentation/grape). A quick example here:
+For detailed usage, please refer to [documentation](https://swiftgraphs.github.io/Grape/Grape/documentation/grape). A quick example here:
 
 ```swift
 import Grape
@@ -182,7 +182,7 @@ struct MyGraph: View {
 
 ### The `ForceSimulation` module
 <details>
-  <summary>Refer to the <a href="https://li3zhen1.github.io/Grape/ForceSimulation/documentation/forcesimulation/">documentation</a> or expand this section to find more about this module.
+  <summary>Refer to the <a href="https://swiftgraphs.github.io/Grape/ForceSimulation/documentation/forcesimulation/">documentation</a> or expand this section to find more about this module.
   </summary>
 
 `ForceSimulation` module mainly contains 3 concepts, `Kinetics`, `ForceProtocol` and `Simulation`.

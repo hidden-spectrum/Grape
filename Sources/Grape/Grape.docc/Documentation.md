@@ -13,7 +13,7 @@ The Grape framework enables you to create a graph visualization in SwiftUI. With
 
 Grape supports localization features. You can localize the labels in the graph visualization by providing a localized string key.
 
-> If you’re looking for a more detailed control of force-directed layouts, please refer to [ForceSimulation | Documentation](https://li3zhen1.github.io/Grape/ForceSimulation/documentation/forcesimulation/).
+> If you’re looking for a more detailed control of force-directed layouts, please refer to [ForceSimulation | Documentation](https://swiftgraphs.github.io/Grape/ForceSimulation/documentation/forcesimulation/).
 
 
 ## Topics
