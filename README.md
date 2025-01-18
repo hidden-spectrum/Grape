@@ -111,7 +111,7 @@ To use Grape in a [SwiftPM](https://swift.org/package-manager/) project, add thi
 
 ``` swift
 dependencies: [
-    .package(url: "https://github.com/swiftgraphs/Grape", from: "0.7.0")
+    .package(url: "https://github.com/swiftgraphs/Grape", from: "1.1.0")
 ]
 ```
 
@@ -188,7 +188,7 @@ struct MyGraph: View {
 `ForceSimulation` module mainly contains 3 concepts, `Kinetics`, `ForceProtocol` and `Simulation`.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/li3zhen1/Grape/main/Assets/SimulationDiagram.svg" alt="A diagram showing the relationships of `Kinetics`, `ForceProtocol` and `Simulation`. A `Simulation` contains a `Kinetics` and a `ForceProtocol`.">
+  <img src="https://raw.githubusercontent.com/swiftgraphs/Grape/main/Assets/SimulationDiagram.svg" alt="A diagram showing the relationships of `Kinetics`, `ForceProtocol` and `Simulation`. A `Simulation` contains a `Kinetics` and a `ForceProtocol`.">
 </p>
 
   
