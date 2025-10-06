@@ -512,21 +512,23 @@ extension ForceDirectedGraphModel {
 
             graphicsContext.transform = .init(translationX: pos.x, y: pos.y)
 
-            let finalizedPath: Path =
+            let finalizedPath: Path = {
                 switch op.pathOrSymbolSize {
-                case .path(let path): path
+                case .path(let path):
+                    return path
                 case .symbolSize(let size):
                     let scaledSize = CGSize(
                         width: size.width * nodeScale,
                         height: size.height * nodeScale
                     )
-                    Path(
+                    return Path(
                         ellipseIn: CGRect(
                             origin: CGPoint(x: -scaledSize.width / 2, y: -scaledSize.height / 2),
                             size: scaledSize
                         )
                     )
                 }
+            }()
 
             graphicsContext.fill(
                 finalizedPath,
