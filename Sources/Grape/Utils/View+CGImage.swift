@@ -70,7 +70,7 @@ extension View {
 
     @inlinable
     @MainActor
-    internal func toCGImage(with environment: EnvironmentValues, antialias: Double = 1.5) -> CGImage? {
+    internal func toCGImage(with environment: EnvironmentValues) -> CGImage? {
         let renderer = ImageRenderer(
             content: self.environment(\.self, environment)
         )
