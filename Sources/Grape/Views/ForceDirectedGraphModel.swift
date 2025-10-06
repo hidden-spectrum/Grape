@@ -571,10 +571,7 @@ extension ForceDirectedGraphModel {
                 switch resolvedStatus {
                 case .pending(let text):
                     let env = graphicsContext.environment
-                    let cgImage = text.toCGImage(
-                        with: env,
-                        antialias: Self.textRasterizationAntialias
-                    )
+                    let cgImage = text.toCGImage(with: env)
                     lastRasterizedScaleFactor = env.displayScale
                     graphRenderingContext.symbols[resolvedTextContent] = .resolved(
                         text, cgImage)
