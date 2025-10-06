@@ -74,7 +74,7 @@ extension View {
         let renderer = ImageRenderer(
             content: self.environment(\.self, environment)
         )
-        renderer.scale = environment.displayScale * antialias
+        renderer.scale = environment.displayScale
         
         // guard let image = renderer.nsImage else { return nil }
         // var imageRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
