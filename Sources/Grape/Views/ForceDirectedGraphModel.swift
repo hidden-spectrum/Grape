@@ -685,12 +685,8 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            (Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias) * nodeScale
-                        let physicalHeight =
-                            (Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias) * nodeScale
+                        let physicalWidth = (Double(rasterizedSymbol.width) / lastRasterizedScaleFactor / Self.textRasterizationAntialias) * nodeScale
+                        let physicalHeight = (Double(rasterizedSymbol.height) / lastRasterizedScaleFactor / Self.textRasterizationAntialias) * nodeScale
 
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
