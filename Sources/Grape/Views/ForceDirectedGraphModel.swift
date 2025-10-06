@@ -432,6 +432,7 @@ extension ForceDirectedGraphModel {
         obsoleteState.cgSize = size
 
         let transform = modelTransform.translate(by: size.simd / 2)
+        let nodeScale = min(transform.scale, 1.0)
         // debugPrint(transform.scale)
 
         // var viewportPositions = [SIMD2<Double>]()
@@ -458,9 +459,9 @@ extension ForceDirectedGraphModel {
                 if let pathBuilder = op.path {
                     {
                         let sourceNodeRadius =
-                            sqrt(graphRenderingContext.nodeHitSizeAreaLookup[op.mark.id.source] ?? 0) / 2
+                            (sqrt(graphRenderingContext.nodeHitSizeAreaLookup[op.mark.id.source] ?? 0) / 2) * nodeScale
                         let targetNodeRadius =
-                            sqrt(graphRenderingContext.nodeHitSizeAreaLookup[op.mark.id.target] ?? 0) / 2
+                            (sqrt(graphRenderingContext.nodeHitSizeAreaLookup[op.mark.id.target] ?? 0) / 2) * nodeScale
                         let angle = atan2(targetPos.y - sourcePos.y, targetPos.x - sourcePos.x)
                         let sourceOffset = SIMD2<Double>(
                             cos(angle) * sourceNodeRadius, sin(angle) * sourceNodeRadius
@@ -483,18 +484,22 @@ extension ForceDirectedGraphModel {
             if let strokeEffect = op.stroke {
                 switch strokeEffect.color {
                 case .color(let color):
+                    var style = strokeEffect.style ?? .defaultLinkStyle
+                    style.lineWidth *= nodeScale
                     graphicsContext.stroke(
                         p,
                         with: .color(color),
-                        style: strokeEffect.style ?? .defaultLinkStyle
+                        style: style
                     )
                 case .clip:
                     break
                 }
             } else {
+                var style = StrokeStyle.defaultLinkStyle
+                style.lineWidth *= nodeScale
                 graphicsContext.stroke(
                     p, with: .defaultLinkShading,
-                    style: .defaultLinkStyle
+                    style: style
                 )
             }
         }
@@ -511,10 +516,14 @@ extension ForceDirectedGraphModel {
                 switch op.pathOrSymbolSize {
                 case .path(let path): path
                 case .symbolSize(let size):
+                    let scaledSize = CGSize(
+                        width: size.width * nodeScale,
+                        height: size.height * nodeScale
+                    )
                     Path(
                         ellipseIn: CGRect(
-                            origin: CGPoint(x: -size.width / 2, y: -size.height / 2),
-                            size: size
+                            origin: CGPoint(x: -scaledSize.width / 2, y: -scaledSize.height / 2),
+                            size: scaledSize
                         )
                     )
                 }
@@ -524,19 +533,22 @@ extension ForceDirectedGraphModel {
                 with: op.fill ?? .defaultNodeShading
             )
             if let strokeEffect = op.stroke {
+                var style = strokeEffect.style ?? .defaultLinkStyle
+                style.lineWidth *= nodeScale
+
                 switch strokeEffect.color {
                 case .color(let color):
                     graphicsContext.stroke(
                         finalizedPath,
                         with: .color(color),
-                        style: strokeEffect.style ?? .defaultLinkStyle
+                        style: style
                     )
                 case .clip:
                     graphicsContext.blendMode = .clear
                     graphicsContext.stroke(
                         finalizedPath,
                         with: .color(.black),
-                        style: strokeEffect.style ?? .defaultLinkStyle
+                        style: style
                     )
                     graphicsContext.blendMode = .normal
                 }
@@ -672,11 +684,11 @@ extension ForceDirectedGraphModel {
                         let offset = textOffsetParams.offset
 
                         let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                            (Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                            / Self.textRasterizationAntialias) * nodeScale
                         let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                            (Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
+                            / Self.textRasterizationAntialias) * nodeScale
 
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
