@@ -160,9 +160,14 @@ public final class ForceDirectedGraphModel<NodeID: Hashable> {
     let velocityDecay: Double
 
     // cache this so text size don't change on monitor switch
+    #if canImport(AppKit)
     @usableFromInline
-    var lastRasterizedScaleFactor: Double = 2.0
-
+    var lastRasterizedScaleFactor: CGFloat = NSScreen.main?.backingScaleFactor ?? 1
+    #else
+    @usableFromInline
+    var lastRasterizedScaleFactor: Double = UIScreen.main.scale
+    #endif
+    
     @usableFromInline
     var _$changeMessage = "N/A"
 
