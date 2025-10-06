@@ -45,10 +45,10 @@ extension GraphContent {
         return ModifiedGraphContent(
             self,
             GraphContentEffect.SymbolSize(
-                CGSize(width: radius * 2, height: radius * 2)
+                CGSize(width: radius, height: radius)
             ))
     }
-
+    
     @inlinable
     public func annotation(
         _ text: Text?, alignment: Alignment = .bottom, offset: CGVector = .zero
