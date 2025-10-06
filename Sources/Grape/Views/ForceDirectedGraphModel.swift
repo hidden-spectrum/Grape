@@ -599,12 +599,8 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-                        let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                        let physicalWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                        let physicalHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
 
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
@@ -633,12 +629,8 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-                        let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                        let physicalWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                        let physicalHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
 
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
@@ -687,8 +679,8 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth = (Double(rasterizedSymbol.width) / lastRasterizedScaleFactor / Self.textRasterizationAntialias) * nodeScale
-                        let physicalHeight = (Double(rasterizedSymbol.height) / lastRasterizedScaleFactor / Self.textRasterizationAntialias) * nodeScale
+                        let physicalWidth = (Double(rasterizedSymbol.width) / lastRasterizedScaleFactor) * nodeScale
+                        let physicalHeight = (Double(rasterizedSymbol.height) / lastRasterizedScaleFactor) * nodeScale
 
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
@@ -718,12 +710,8 @@ extension ForceDirectedGraphModel {
                     if let textOffsetParams = graphRenderingContext.textOffsets[symbolID] {
                         let offset = textOffsetParams.offset
 
-                        let physicalWidth =
-                            Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
-                        let physicalHeight =
-                            Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
-                            / Self.textRasterizationAntialias
+                        let physicalWidth = Double(rasterizedSymbol.width) / lastRasterizedScaleFactor
+                        let physicalHeight = Double(rasterizedSymbol.height) / lastRasterizedScaleFactor
 
                         let textImageOffset = textOffsetParams.alignment.textImageOffsetInCGContext(
                             width: physicalWidth, height: physicalHeight)
@@ -748,12 +736,7 @@ extension ForceDirectedGraphModel {
 
         rasterizedSymbols = newRasterizedSymbols
     }
-
-    @inlinable
-    static var textRasterizationAntialias: Double {
-        return 1.5
-    }
-
+    
     @inlinable
     func revive(
         for newContext: _GraphRenderingContext<NodeID>,
